@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+}
+model GuestSession {
+  id String @id @default(cuid())
+  tokenHash String @unique
+  createdAt DateTime @default(now())
+  translations Translation[]
+  favorites Favorite[]
+  conversations Conversation[]
+}
+model Translation {
+  id String @id @default(cuid())
+  guestId String
+  guest GuestSession @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  sourceText String
+  translatedText String
+  sourceLang String
+  targetLang String
+  tone String @default("casual")
+  requestKey String
+  createdAt DateTime @default(now())
+  favorites Favorite[]
+  @@index([guestId, createdAt])
+  @@index([guestId, requestKey])
+}
+model Favorite {
+  id String @id @default(cuid())
+  guestId String
+  guest GuestSession @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  translationId String
+  translation Translation @relation(fields: [translationId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@unique([guestId, translationId])
+  @@index([guestId, createdAt])
+}
+model Conversation {
+  id String @id @default(cuid())
+  guestId String
+  guest GuestSession @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  title String @default("Yangi suhbat")
+  createdAt DateTime @default(now())
+  endedAt DateTime?
+  messages ConversationMessage[]
+  @@index([guestId, createdAt])
+}
+model ConversationMessage {
+  id String @id @default(cuid())
+  conversationId String
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sourceText String
+  translatedText String
+  sourceLang String
+  targetLang String
+  createdAt DateTime @default(now())
+  @@index([conversationId, createdAt])
+}
