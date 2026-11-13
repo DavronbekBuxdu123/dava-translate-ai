@@ -11,12 +11,241 @@ import { Empty, ErrorBox } from '@/components/ui/empty';
 import { Confirm } from '@/components/ui/dialog';
 import { SpeechButton } from '@/components/ui/speech-button';
 export function HistoryView({ favorites = false }: { favorites?: boolean }) {
- const [q, setQ] = useState(''); const [search, setSearch] = useState(''); const [language, setLanguage] = useState(''); const [date, setDate] = useState(''); const [page, setPage] = useState(1); const [busy, setBusy] = useState(false); const router = useRouter(); const client = useQueryClient();
- const params = new URLSearchParams({ page: String(page), q: search, ...(language ? { language } : {}), ...(date ? { date } : {}) });
- const query = useQuery({ queryKey: ['history', favorites, search, language, date, page], queryFn: () => api<{ items: Translation[]; total: number }>(`/api/${favorites ? 'favorites' : 'history'}?${params}`) });
- async function mutate(work: () => Promise<unknown>) { setBusy(true); try { await work(); await client.invalidateQueries({ queryKey: ['history'] }); } catch (e) { toast.error((e as Error).message); } finally { setBusy(false); } }
- function reuse(item: Translation) { sessionStorage.setItem('dava-reuse', JSON.stringify({ text: item.sourceText, sourceLang: item.sourceLang })); router.push('/translate'); }
- return <><div className="page-intro"><div><span className="eyebrow">SIZNING SO‘ZLARINGIZ</span><h1>{favorites ? 'Sevimli tarjimalar' : 'Tarjima tarixi'}</h1><p>{favorites ? 'Kerakli so‘zlarni saqlang va istalgan payt qayta ishlating.' : 'Avvalgi tarjimalaringizni toping va suhbatni davom ettiring.'}</p></div>{!favorites && <Confirm title="Barcha tarix o‘chirilsinmi?" description="Tarjimalaringiz va ularga bog‘langan sevimlilar butunlay o‘chiriladi. Suhbatlar alohida saqlanadi." onConfirm={() => void mutate(() => api('/api/history', { method: 'DELETE' }))}><Button variant="secondary" disabled={busy || !query.data?.total}><Trash2 size={17}/> Tarixni tozalash</Button></Confirm>}</div>
- <section className="panel history-panel"><div className="filter-bar"><form className="search-field" onSubmit={e => { e.preventDefault(); setSearch(q); setPage(1); }}><Search size={18}/><input aria-label="Tarixdan qidirish" value={q} maxLength={200} onChange={e => setQ(e.target.value)} placeholder="Tarjima yoki so‘zni qidiring..."/><Button type="submit" variant="ghost" size="sm">Qidirish</Button></form><select aria-label="Til bo‘yicha filtrlash" value={language} onChange={e => { setLanguage(e.target.value); setPage(1); }}><option value="">Barcha tillar</option><option value="uz">O‘zbekcha → Русский</option><option value="ru">Русский → O‘zbekcha</option></select><input type="date" aria-label="Sana bo‘yicha filtrlash" value={date} onChange={e => { setDate(e.target.value); setPage(1); }}/></div>
- {query.isPending ? <div className="list-skeleton" aria-label="Tarix yuklanmoqda">{[1,2,3].map(n => <div className="skeleton" key={n}/>)}</div> : query.error ? <><ErrorBox message={query.error.message}/><Button variant="secondary" onClick={() => void query.refetch()}>Qayta urinish</Button></> : !query.data?.items.length ? <Empty title={search || language || date ? 'Mos tarjima topilmadi' : favorites ? 'Sevimlilar hali bo‘sh' : 'Yangi hikoya uchun joy'} text={favorites ? 'Tarjimon oynasidagi yurakcha orqali muhim tarjimalarni saqlang.' : 'Birinchi tarjimangizdan keyin u shu yerda ko‘rinadi.'}/> : <><div className="translation-list">{query.data.items.map(item => <article className="history-item" key={item.id}><div className="history-item-meta"><span className="pill">{languages[item.sourceLang]} → {languages[item.targetLang]}</span><time>{new Date(item.createdAt).toLocaleString('uz-UZ', { dateStyle: 'medium', timeStyle: 'short' })}</time></div><div className="history-texts"><p lang={item.sourceLang}>{item.sourceText}</p><p lang={item.targetLang}>{item.translatedText}</p></div><div className="history-item-actions"><div className="actions"><SpeechButton text={item.translatedText} language={item.targetLang}/><Button variant="ghost" size="icon" aria-label="Tarjimani nusxalash" onClick={() => void copy(item.translatedText).then(() => toast.success('Nusxalandi')).catch(e => toast.error(e.message))}><Copy size={17}/></Button><Button variant="ghost" size="icon" disabled={busy} aria-pressed={!!item.favorites?.length} aria-label="Sevimlilarni almashtirish" onClick={() => void mutate(() => item.favorites?.[0] ? api(`/api/favorites/${item.favorites[0].id}`, { method: 'DELETE' }) : api('/api/favorites', { method: 'POST', body: JSON.stringify({ translationId: item.id }) }))}><Heart size={17} className={item.favorites?.length ? 'heart-filled' : ''}/></Button><Confirm title="Tarjima o‘chirilsinmi?" description="Bu yozuv va uning sevimli belgisi o‘chiriladi." onConfirm={() => void mutate(() => api(`/api/history/${item.id}`, { method: 'DELETE' }))}><Button variant="ghost" size="icon" disabled={busy} aria-label="Tarjimani o‘chirish"><Trash2 size={17}/></Button></Confirm></div><Button variant="ghost" size="sm" onClick={() => reuse(item)}>Qayta ishlatish <ArrowUpRight size={15}/></Button></div></article>)}</div><div className="pagination"><Button variant="secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>Oldingi</Button><span>{page} / {Math.max(1, Math.ceil(query.data.total / 20))}</span><Button variant="secondary" disabled={page * 20 >= query.data.total} onClick={() => setPage(page + 1)}>Keyingi</Button></div></>}</section><p className="privacy-note">Tarix faqat shu brauzerdagi mehmon cookie’siga tegishli. Cookie’ni tozalash eski tarixga kirishni yo‘qotadi. Sevimli iboralar esa iboralar sahifasida lokal saqlanadi.</p></>;
+  const [q, setQ] = useState('');
+  const [search, setSearch] = useState('');
+  const [language, setLanguage] = useState('');
+  const [date, setDate] = useState('');
+  const [page, setPage] = useState(1);
+  const [busy, setBusy] = useState(false);
+  const router = useRouter();
+  const client = useQueryClient();
+  const params = new URLSearchParams({
+    page: String(page),
+    q: search,
+    ...(language ? { language } : {}),
+    ...(date ? { date } : {}),
+  });
+  const query = useQuery({
+    queryKey: ['history', favorites, search, language, date, page],
+    queryFn: () =>
+      api<{ items: Translation[]; total: number }>(
+        `/api/${favorites ? 'favorites' : 'history'}?${params}`,
+      ),
+  });
+  async function mutate(work: () => Promise<unknown>) {
+    setBusy(true);
+    try {
+      await work();
+      await client.invalidateQueries({ queryKey: ['history'] });
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  function reuse(item: Translation) {
+    sessionStorage.setItem(
+      'dava-reuse',
+      JSON.stringify({ text: item.sourceText, sourceLang: item.sourceLang }),
+    );
+    router.push('/translate');
+  }
+  return (
+    <>
+      <div className="page-intro">
+        <div>
+          <span className="eyebrow">SIZNING SO‘ZLARINGIZ</span>
+          <h1>{favorites ? 'Sevimli tarjimalar' : 'Tarjima tarixi'}</h1>
+          <p>
+            {favorites
+              ? 'Kerakli so‘zlarni saqlang va istalgan payt qayta ishlating.'
+              : 'Avvalgi tarjimalaringizni toping va suhbatni davom ettiring.'}
+          </p>
+        </div>
+        {!favorites && (
+          <Confirm
+            title="Barcha tarix o‘chirilsinmi?"
+            description="Tarjimalaringiz va ularga bog‘langan sevimlilar butunlay o‘chiriladi. Suhbatlar alohida saqlanadi."
+            onConfirm={() => void mutate(() => api('/api/history', { method: 'DELETE' }))}
+          >
+            <Button variant="secondary" disabled={busy || !query.data?.total}>
+              <Trash2 size={17} /> Tarixni tozalash
+            </Button>
+          </Confirm>
+        )}
+      </div>
+      <section className="panel history-panel">
+        <div className="filter-bar">
+          <form
+            className="search-field"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSearch(q);
+              setPage(1);
+            }}
+          >
+            <Search size={18} />
+            <input
+              aria-label="Tarixdan qidirish"
+              value={q}
+              maxLength={200}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Tarjima yoki so‘zni qidiring..."
+            />
+            <Button type="submit" variant="ghost" size="sm">
+              Qidirish
+            </Button>
+          </form>
+          <select
+            aria-label="Til bo‘yicha filtrlash"
+            value={language}
+            onChange={(e) => {
+              setLanguage(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">Barcha tillar</option>
+            <option value="uz">O‘zbekcha → Русский</option>
+            <option value="ru">Русский → O‘zbekcha</option>
+          </select>
+          <input
+            type="date"
+            aria-label="Sana bo‘yicha filtrlash"
+            value={date}
+            onChange={(e) => {
+              setDate(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
+        {query.isPending ? (
+          <div className="list-skeleton" aria-label="Tarix yuklanmoqda">
+            {[1, 2, 3].map((n) => (
+              <div className="skeleton" key={n} />
+            ))}
+          </div>
+        ) : query.error ? (
+          <>
+            <ErrorBox message={query.error.message} />
+            <Button variant="secondary" onClick={() => void query.refetch()}>
+              Qayta urinish
+            </Button>
+          </>
+        ) : !query.data?.items.length ? (
+          <Empty
+            title={
+              search || language || date
+                ? 'Mos tarjima topilmadi'
+                : favorites
+                  ? 'Sevimlilar hali bo‘sh'
+                  : 'Yangi hikoya uchun joy'
+            }
+            text={
+              favorites
+                ? 'Tarjimon oynasidagi yurakcha orqali muhim tarjimalarni saqlang.'
+                : 'Birinchi tarjimangizdan keyin u shu yerda ko‘rinadi.'
+            }
+          />
+        ) : (
+          <>
+            <div className="translation-list">
+              {query.data.items.map((item) => (
+                <article className="history-item" key={item.id}>
+                  <div className="history-item-meta">
+                    <span className="pill">
+                      {languages[item.sourceLang]} → {languages[item.targetLang]}
+                    </span>
+                    <time>
+                      {new Date(item.createdAt).toLocaleString('uz-UZ', {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                      })}
+                    </time>
+                  </div>
+                  <div className="history-texts">
+                    <p lang={item.sourceLang}>{item.sourceText}</p>
+                    <p lang={item.targetLang}>{item.translatedText}</p>
+                  </div>
+                  <div className="history-item-actions">
+                    <div className="actions">
+                      <SpeechButton text={item.translatedText} language={item.targetLang} />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Tarjimani nusxalash"
+                        onClick={() =>
+                          void copy(item.translatedText)
+                            .then(() => toast.success('Nusxalandi'))
+                            .catch((e) => toast.error(e.message))
+                        }
+                      >
+                        <Copy size={17} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={busy}
+                        aria-pressed={!!item.favorites?.length}
+                        aria-label="Sevimlilarni almashtirish"
+                        onClick={() =>
+                          void mutate(() =>
+                            item.favorites?.[0]
+                              ? api(`/api/favorites/${item.favorites[0].id}`, { method: 'DELETE' })
+                              : api('/api/favorites', {
+                                  method: 'POST',
+                                  body: JSON.stringify({ translationId: item.id }),
+                                }),
+                          )
+                        }
+                      >
+                        <Heart size={17} className={item.favorites?.length ? 'heart-filled' : ''} />
+                      </Button>
+                      <Confirm
+                        title="Tarjima o‘chirilsinmi?"
+                        description="Bu yozuv va uning sevimli belgisi o‘chiriladi."
+                        onConfirm={() =>
+                          void mutate(() => api(`/api/history/${item.id}`, { method: 'DELETE' }))
+                        }
+                      >
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={busy}
+                          aria-label="Tarjimani o‘chirish"
+                        >
+                          <Trash2 size={17} />
+                        </Button>
+                      </Confirm>
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={() => reuse(item)}>
+                      Qayta ishlatish <ArrowUpRight size={15} />
+                    </Button>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div className="pagination">
+              <Button variant="secondary" disabled={page <= 1} onClick={() => setPage(page - 1)}>
+                Oldingi
+              </Button>
+              <span>
+                {page} / {Math.max(1, Math.ceil(query.data.total / 20))}
+              </span>
+              <Button
+                variant="secondary"
+                disabled={page * 20 >= query.data.total}
+                onClick={() => setPage(page + 1)}
+              >
+                Keyingi
+              </Button>
+            </div>
+          </>
+        )}
+      </section>
+      <p className="privacy-note">
+        Tarix faqat shu brauzerdagi mehmon cookie’siga tegishli. Cookie’ni tozalash eski tarixga
+        kirishni yo‘qotadi. Sevimli iboralar esa iboralar sahifasida lokal saqlanadi.
+      </p>
+    </>
+  );
 }

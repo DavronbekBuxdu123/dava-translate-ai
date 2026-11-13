@@ -10,8 +10,144 @@ import { Button } from '@/components/ui/button';
 import { SpeechButton } from '@/components/ui/speech-button';
 import { Empty } from '@/components/ui/empty';
 const initial: string[] = [];
-export function togglePhraseFavorite(current: string[], id: string) { return current.includes(id) ? current.filter(v => v !== id) : [...current, id]; }
+export function togglePhraseFavorite(current: string[], id: string) {
+  return current.includes(id) ? current.filter((v) => v !== id) : [...current, id];
+}
+function PhraseContent() {
+  const params = useSearchParams();
+  const [query, setQuery] = useState(params.get('q') || '');
+  const [category, setCategory] = useState(
+    categories.some((c) => c.id === params.get('category')) ? params.get('category')! : 'all',
+  );
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [stored, setFavorites] = useLocal<string[]>('dava-phrase-favorites', initial);
+  const favorites = Array.isArray(stored) ? stored.filter((v) => typeof v === 'string') : [];
+  const [copied, setCopied] = useState('');
+  const filtered = searchPhrases(query, category).filter(
+    (p) => !favoritesOnly || favorites.includes(p.id),
+  );
+  return (
+    <>
+      <div className="page-intro">
+        <div>
+          <span className="eyebrow">SAFARINGIZ UCHUN SO‘ZLAR</span>
+          <h1>O‘zingizni erkin ifoda eting</h1>
+          <p>{phrases.length} ta foydali ibora. Har bir vaziyat uchun ishonchli yordamchi.</p>
+        </div>
+        <span className="offline-pill">
+          <WifiOff size={15} /> Oflayn ham mavjud
+        </span>
+      </div>
+      <section className="panel phrase-toolbar">
+        <div className="search-field">
+          <Search size={20} />
+          <input
+            aria-label="Iboralardan qidirish"
+            placeholder="O‘zbekcha yoki ruscha ibora qidiring..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        <Button
+          variant={favoritesOnly ? 'default' : 'secondary'}
+          aria-pressed={favoritesOnly}
+          onClick={() => setFavoritesOnly(!favoritesOnly)}
+        >
+          <Heart size={17} /> Saqlanganlar ({favorites.length})
+        </Button>
+      </section>
+      <div className="category-tabs" aria-label="Ibora kategoriyalari">
+        <button
+          className={category === 'all' ? 'selected' : ''}
+          aria-pressed={category === 'all'}
+          onClick={() => setCategory('all')}
+        >
+          <BookOpen size={16} /> Barchasi
+        </button>
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            aria-pressed={category === c.id}
+            className={category === c.id ? 'selected' : ''}
+            onClick={() => setCategory(c.id)}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+      <div className="section-heading">
+        <p className="muted">{filtered.length} ta ibora topildi</p>
+        <a href="/offline/index.html">Oflayn kutubxonani ochish ↗</a>
+      </div>
+      {!filtered.length ? (
+        <section className="panel">
+          <Empty title="Ibora topilmadi" text="Boshqa so‘z yoki kategoriya tanlab ko‘ring." />
+        </section>
+      ) : (
+        <div className="phrase-grid">
+          {filtered.map((phrase) => (
+            <article className="panel phrase-card" key={phrase.id}>
+              <div className="phrase-card-top">
+                <span className="phrase-category">
+                  {categories.find((c) => c.id === phrase.category)?.label}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={
+                    favorites.includes(phrase.id)
+                      ? 'Iborani sevimlilardan olish'
+                      : 'Iborani saqlash'
+                  }
+                  aria-pressed={favorites.includes(phrase.id)}
+                  onClick={() => setFavorites(togglePhraseFavorite(favorites, phrase.id))}
+                >
+                  <Heart
+                    size={18}
+                    className={favorites.includes(phrase.id) ? 'heart-filled' : ''}
+                  />
+                </Button>
+              </div>
+              <h3 lang="uz">{phrase.uz}</h3>
+              <p lang="ru">{phrase.ru}</p>
+              <div className="phrase-card-footer">
+                <span className="phrase-direction">
+                  <span className="flag flag-uz" /> UZ <span>→</span> RU{' '}
+                  <span className="flag flag-ru" />
+                </span>
+                <div className="actions">
+                  <SpeechButton text={phrase.ru} language="ru" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Iborani nusxalash"
+                    onClick={async () => {
+                      try {
+                        await copy(`${phrase.uz}\n${phrase.ru}`);
+                        setCopied(phrase.id);
+                        setTimeout(() => setCopied(''), 1500);
+                      } catch (e) {
+                        toast.error((e as Error).message);
+                      }
+                    }}
+                  >
+                    {copied === phrase.id ? <Check size={17} /> : <Copy size={17} />}
+                  </Button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+      <p className="privacy-note">
+        Asosiy iboralar ilova bilan yuklanadi. Birinchi internetli tashrifdan keyin oflayn kutubxona
+        keshlanadi. Ovoz uchun qurilmada ruscha ovoz bo‘lishi yoki internetga ulanish kerak.
+      </p>
+    </>
+  );
+}
+
 export function PhraseLibrary() {
- const params = useSearchParams(); const [query, setQuery] = useState(params.get('q') || ''); const [category, setCategory] = useState(categories.some(c => c.id === params.get('category')) ? params.get('category')! : 'all'); const [favoritesOnly, setFavoritesOnly] = useState(false); const [stored, setFavorites] = useLocal<string[]>('dava-phrase-favorites', initial); const favorites = Array.isArray(stored) ? stored.filter(v => typeof v === 'string') : []; const [copied, setCopied] = useState(''); const filtered = searchPhrases(query, category).filter(p => !favoritesOnly || favorites.includes(p.id));
- return <><div className="page-intro"><div><span className="eyebrow">SAFARINGIZ UCHUN SO‘ZLAR</span><h1>O‘zingizni erkin ifoda eting</h1><p>{phrases.length} ta foydali ibora. Har bir vaziyat uchun ishonchli yordamchi.</p></div><span className="offline-pill"><WifiOff size={15}/> Oflayn ham mavjud</span></div><section className="panel phrase-toolbar"><div className="search-field"><Search size={20}/><input aria-label="Iboralardan qidirish" placeholder="O‘zbekcha yoki ruscha ibora qidiring..." value={query} onChange={e => setQuery(e.target.value)}/></div><Button variant={favoritesOnly ? 'default' : 'secondary'} aria-pressed={favoritesOnly} onClick={() => setFavoritesOnly(!favoritesOnly)}><Heart size={17}/> Saqlanganlar ({favorites.length})</Button></section><div className="category-tabs" aria-label="Ibora kategoriyalari"><button className={category === 'all' ? 'selected' : ''} aria-pressed={category === 'all'} onClick={() => setCategory('all')}><BookOpen size={16}/> Barchasi</button>{categories.map(c => <button key={c.id} aria-pressed={category === c.id} className={category === c.id ? 'selected' : ''} onClick={() => setCategory(c.id)}>{c.label}</button>)}</div><div className="section-heading"><p className="muted">{filtered.length} ta ibora topildi</p><a href="/offline/index.html">Oflayn kutubxonani ochish ↗</a></div>{!filtered.length ? <section className="panel"><Empty title="Ibora topilmadi" text="Boshqa so‘z yoki kategoriya tanlab ko‘ring."/></section> : <div className="phrase-grid">{filtered.map(phrase => <article className="panel phrase-card" key={phrase.id}><div className="phrase-card-top"><span className="phrase-category">{categories.find(c => c.id === phrase.category)?.label}</span><Button variant="ghost" size="icon" aria-label={favorites.includes(phrase.id) ? 'Iborani sevimlilardan olish' : 'Iborani saqlash'} aria-pressed={favorites.includes(phrase.id)} onClick={() => setFavorites(togglePhraseFavorite(favorites, phrase.id))}><Heart size={18} className={favorites.includes(phrase.id) ? 'heart-filled' : ''}/></Button></div><h3 lang="uz">{phrase.uz}</h3><p lang="ru">{phrase.ru}</p><div className="phrase-card-footer"><span className="phrase-direction"><span className="flag flag-uz"/> UZ <span>→</span> RU <span className="flag flag-ru"/></span><div className="actions"><SpeechButton text={phrase.ru} language="ru"/><Button variant="ghost" size="icon" aria-label="Iborani nusxalash" onClick={async () => { try { await copy(`${phrase.uz}\n${phrase.ru}`); setCopied(phrase.id); setTimeout(() => setCopied(''),1500); } catch (e) { toast.error((e as Error).message); } }}>{copied === phrase.id ? <Check size={17}/> : <Copy size={17}/>}</Button></div></div></article>)}</div>}<p className="privacy-note">Asosiy iboralar ilova bilan yuklanadi. Birinchi internetli tashrifdan keyin oflayn kutubxona keshlanadi. Ovoz uchun qurilmada ruscha ovoz bo‘lishi yoki internetga ulanish kerak.</p></>;
+  const params = useSearchParams();
+  return <PhraseContent key={params.toString()} />;
 }

@@ -1,1 +1,562 @@
-[{"id": "greetings-1", "category": "greetings", "uz": "Assalomu alaykum!", "ru": "Здравствуйте!"}, {"id": "greetings-2", "category": "greetings", "uz": "Xayrli tong!", "ru": "Доброе утро!"}, {"id": "greetings-3", "category": "greetings", "uz": "Xayrli kun!", "ru": "Добрый день!"}, {"id": "greetings-4", "category": "greetings", "uz": "Xayrli kech!", "ru": "Добрый вечер!"}, {"id": "greetings-5", "category": "greetings", "uz": "Tanishganimdan xursandman.", "ru": "Рад с вами познакомиться."}, {"id": "greetings-6", "category": "greetings", "uz": "Ismingiz nima?", "ru": "Как вас зовут?"}, {"id": "greetings-7", "category": "greetings", "uz": "Mening ismim Davron.", "ru": "Меня зовут Даврон."}, {"id": "greetings-8", "category": "greetings", "uz": "Katta rahmat!", "ru": "Большое спасибо!"}, {"id": "greetings-9", "category": "greetings", "uz": "Iltimos.", "ru": "Пожалуйста."}, {"id": "greetings-10", "category": "greetings", "uz": "Xayr, ko‘rishguncha!", "ru": "До свидания, до встречи!"}, {"id": "transport-1", "category": "transport", "uz": "Eng yaqin metro bekati qayerda?", "ru": "Где ближайшая станция метро?"}, {"id": "transport-2", "category": "transport", "uz": "Bu avtobus markazga boradimi?", "ru": "Этот автобус идёт в центр?"}, {"id": "transport-3", "category": "transport", "uz": "Yo‘l haqi qancha?", "ru": "Сколько стоит проезд?"}, {"id": "transport-4", "category": "transport", "uz": "Bitta chipta bering, iltimos.", "ru": "Один билет, пожалуйста."}, {"id": "transport-5", "category": "transport", "uz": "Keyingi bekatda tushaman.", "ru": "Я выхожу на следующей остановке."}, {"id": "transport-6", "category": "transport", "uz": "Aeroportga qanday borsam bo‘ladi?", "ru": "Как добраться до аэропорта?"}, {"id": "transport-7", "category": "transport", "uz": "Qaysi yo‘nalishga o‘tishim kerak?", "ru": "На какую линию мне нужно пересесть?"}, {"id": "transport-8", "category": "transport", "uz": "Oxirgi poyezd soat nechada?", "ru": "Во сколько последний поезд?"}, {"id": "transport-9", "category": "transport", "uz": "Shu manzilga olib boring, iltimos.", "ru": "Отвезите меня по этому адресу, пожалуйста."}, {"id": "transport-10", "category": "transport", "uz": "Karta bilan to‘lasam bo‘ladimi?", "ru": "Можно оплатить картой?"}, {"id": "hotel-1", "category": "hotel", "uz": "Men xona band qilgan edim.", "ru": "У меня забронирован номер."}, {"id": "hotel-2", "category": "hotel", "uz": "Bir kishilik bo‘sh xona bormi?", "ru": "У вас есть свободный одноместный номер?"}, {"id": "hotel-3", "category": "hotel", "uz": "Bir kecha turish qancha turadi?", "ru": "Сколько стоит проживание за одну ночь?"}, {"id": "hotel-4", "category": "hotel", "uz": "Nonushta narxga kiradimi?", "ru": "Завтрак включён в стоимость?"}, {"id": "hotel-5", "category": "hotel", "uz": "Wi-Fi parolini ayting, iltimos.", "ru": "Скажите пароль от Wi-Fi, пожалуйста."}, {"id": "hotel-6", "category": "hotel", "uz": "Xonadan soat nechada chiqish kerak?", "ru": "Во сколько нужно освободить номер?"}, {"id": "hotel-7", "category": "hotel", "uz": "Xonamda issiq suv yo‘q.", "ru": "В моём номере нет горячей воды."}, {"id": "hotel-8", "category": "hotel", "uz": "Qo‘shimcha sochiq bersangiz.", "ru": "Дайте, пожалуйста, дополнительное полотенце."}, {"id": "hotel-9", "category": "hotel", "uz": "Yukimni shu yerda qoldirsam bo‘ladimi?", "ru": "Можно оставить здесь багаж?"}, {"id": "hotel-10", "category": "hotel", "uz": "Yana bir kechaga qolmoqchiman.", "ru": "Я хочу остаться ещё на одну ночь."}, {"id": "restaurant-1", "category": "restaurant", "uz": "Menyuni bersangiz, iltimos.", "ru": "Принесите меню, пожалуйста."}, {"id": "restaurant-2", "category": "restaurant", "uz": "Ikki kishilik stol bormi?", "ru": "Есть столик на двоих?"}, {"id": "restaurant-3", "category": "restaurant", "uz": "Nimani tavsiya qilasiz?", "ru": "Что вы посоветуете?"}, {"id": "restaurant-4", "category": "restaurant", "uz": "Bu taomda cho‘chqa go‘shti bormi?", "ru": "В этом блюде есть свинина?"}, {"id": "restaurant-5", "category": "restaurant", "uz": "Menga yong‘oq mumkin emas, allergiyam bor.", "ru": "У меня аллергия на орехи."}, {"id": "restaurant-6", "category": "restaurant", "uz": "Go‘shtsiz taom bormi?", "ru": "Есть блюда без мяса?"}, {"id": "restaurant-7", "category": "restaurant", "uz": "Gazsiz suv bering, iltimos.", "ru": "Воду без газа, пожалуйста."}, {"id": "restaurant-8", "category": "restaurant", "uz": "Hisobni olib keling, iltimos.", "ru": "Принесите счёт, пожалуйста."}, {"id": "restaurant-9", "category": "restaurant", "uz": "O‘zim bilan olib ketish uchun o‘rab bering.", "ru": "Упакуйте с собой, пожалуйста."}, {"id": "restaurant-10", "category": "restaurant", "uz": "Juda mazali ekan, rahmat!", "ru": "Очень вкусно, спасибо!"}, {"id": "shopping-1", "category": "shopping", "uz": "Bu qancha turadi?", "ru": "Сколько это стоит?"}, {"id": "shopping-2", "category": "shopping", "uz": "Boshqa o‘lchami bormi?", "ru": "Есть другой размер?"}, {"id": "shopping-3", "category": "shopping", "uz": "Buni kiyib ko‘rsam bo‘ladimi?", "ru": "Можно это примерить?"}, {"id": "shopping-4", "category": "shopping", "uz": "Kiyib ko‘rish xonasi qayerda?", "ru": "Где примерочная?"}, {"id": "shopping-5", "category": "shopping", "uz": "Boshqa rangi bormi?", "ru": "Есть другой цвет?"}, {"id": "shopping-6", "category": "shopping", "uz": "Arzonrog‘i bormi?", "ru": "Есть что-нибудь подешевле?"}, {"id": "shopping-7", "category": "shopping", "uz": "Paket kerak emas, rahmat.", "ru": "Пакет не нужен, спасибо."}, {"id": "shopping-8", "category": "shopping", "uz": "Chekni bering, iltimos.", "ru": "Дайте чек, пожалуйста."}, {"id": "shopping-9", "category": "shopping", "uz": "Buni qaytarib bermoqchiman.", "ru": "Я хочу это вернуть."}, {"id": "shopping-10", "category": "shopping", "uz": "Do‘kon soat nechagacha ishlaydi?", "ru": "До скольких работает магазин?"}, {"id": "directions-1", "category": "directions", "uz": "Kechirasiz, menga yordam bera olasizmi?", "ru": "Извините, вы можете мне помочь?"}, {"id": "directions-2", "category": "directions", "uz": "Bu manzilga qanday borsam bo‘ladi?", "ru": "Как добраться до этого адреса?"}, {"id": "directions-3", "category": "directions", "uz": "Xaritada ko‘rsatib bering, iltimos.", "ru": "Покажите на карте, пожалуйста."}, {"id": "directions-4", "category": "directions", "uz": "Piyoda borsam uzoqmi?", "ru": "Далеко ли идти пешком?"}, {"id": "directions-5", "category": "directions", "uz": "To‘g‘ri yurishim kerakmi?", "ru": "Мне нужно идти прямо?"}, {"id": "directions-6", "category": "directions", "uz": "O‘ngga burilishim kerakmi?", "ru": "Мне нужно повернуть направо?"}, {"id": "directions-7", "category": "directions", "uz": "Chapga buriling.", "ru": "Поверните налево."}, {"id": "directions-8", "category": "directions", "uz": "Yaqinda dorixona bormi?", "ru": "Поблизости есть аптека?"}, {"id": "directions-9", "category": "directions", "uz": "Hojatxona qayerda?", "ru": "Где туалет?"}, {"id": "directions-10", "category": "directions", "uz": "Men adashib qoldim.", "ru": "Я заблудился."}, {"id": "university-1", "category": "university", "uz": "Qabul bo‘limi qayerda?", "ru": "Где приёмная комиссия?"}, {"id": "university-2", "category": "university", "uz": "Men O‘zbekistondan kelgan talabaman.", "ru": "Я студент из Узбекистана."}, {"id": "university-3", "category": "university", "uz": "Dars soat nechada boshlanadi?", "ru": "Во сколько начинается занятие?"}, {"id": "university-4", "category": "university", "uz": "Dars jadvalini qayerdan topsam bo‘ladi?", "ru": "Где можно найти расписание занятий?"}, {"id": "university-5", "category": "university", "uz": "Kutubxonaga qanday a’zo bo‘lsam bo‘ladi?", "ru": "Как записаться в библиотеку?"}, {"id": "university-6", "category": "university", "uz": "Talabalik guvohnomasini olmoqchiman.", "ru": "Я хочу получить студенческий билет."}, {"id": "university-7", "category": "university", "uz": "Yotoqxonadan joy olish mumkinmi?", "ru": "Можно получить место в общежитии?"}, {"id": "university-8", "category": "university", "uz": "Vazifani qayta tushuntirib bering, iltimos.", "ru": "Объясните задание ещё раз, пожалуйста."}, {"id": "university-9", "category": "university", "uz": "Imtihon qachon bo‘ladi?", "ru": "Когда будет экзамен?"}, {"id": "university-10", "category": "university", "uz": "O‘qituvchi bilan gaplashsam bo‘ladimi?", "ru": "Можно поговорить с преподавателем?"}, {"id": "documents-1", "category": "documents", "uz": "Mana mening pasportim.", "ru": "Вот мой паспорт."}, {"id": "documents-2", "category": "documents", "uz": "Qaysi hujjatlar kerak?", "ru": "Какие документы нужны?"}, {"id": "documents-3", "category": "documents", "uz": "Arizani to‘ldirishga yordam bering, iltimos.", "ru": "Помогите заполнить заявление, пожалуйста."}, {"id": "documents-4", "category": "documents", "uz": "Hujjatning nusxasi kerakmi?", "ru": "Нужна копия документа?"}, {"id": "documents-5", "category": "documents", "uz": "Tarjimasini notarial tasdiqlash kerakmi?", "ru": "Нужно нотариально заверить перевод?"}, {"id": "documents-6", "category": "documents", "uz": "Ro‘yxatdan o‘tish uchun qayerga boraman?", "ru": "Куда обратиться для регистрации?"}, {"id": "documents-7", "category": "documents", "uz": "Hujjatimni yo‘qotib qo‘ydim.", "ru": "Я потерял документ."}, {"id": "documents-8", "category": "documents", "uz": "Elchixonaga qo‘ng‘iroq qilishim kerak.", "ru": "Мне нужно позвонить в посольство."}, {"id": "documents-9", "category": "documents", "uz": "Hujjatlar qachon tayyor bo‘ladi?", "ru": "Когда будут готовы документы?"}, {"id": "documents-10", "category": "documents", "uz": "Shu yerga imzo qo‘yishim kerakmi?", "ru": "Мне нужно подписать здесь?"}, {"id": "emergency-1", "category": "emergency", "uz": "Yordam bering!", "ru": "Помогите!"}, {"id": "emergency-2", "category": "emergency", "uz": "Tez yordam chaqiring!", "ru": "Вызовите скорую помощь!"}, {"id": "emergency-3", "category": "emergency", "uz": "Politsiyani chaqiring!", "ru": "Вызовите полицию!"}, {"id": "emergency-4", "category": "emergency", "uz": "Menga shifokor kerak.", "ru": "Мне нужен врач."}, {"id": "emergency-5", "category": "emergency", "uz": "O‘zimni yomon his qilyapman.", "ru": "Я плохо себя чувствую."}, {"id": "emergency-6", "category": "emergency", "uz": "Bu yerim og‘riyapti.", "ru": "У меня болит вот здесь."}, {"id": "emergency-7", "category": "emergency", "uz": "Telefonimni o‘g‘irlashdi.", "ru": "У меня украли телефон."}, {"id": "emergency-8", "category": "emergency", "uz": "Men rus tilida yaxshi gapira olmayman.", "ru": "Я плохо говорю по-русски."}, {"id": "emergency-9", "category": "emergency", "uz": "Yaqinlarimga qo‘ng‘iroq qilishim kerak.", "ru": "Мне нужно позвонить близким."}, {"id": "emergency-10", "category": "emergency", "uz": "Yong‘in chiqdi! Tashqariga chiqing!", "ru": "Пожар! Выходите на улицу!"}, {"id": "everyday-1", "category": "everyday", "uz": "Sekinroq gapiring, iltimos.", "ru": "Говорите помедленнее, пожалуйста."}, {"id": "everyday-2", "category": "everyday", "uz": "Yana bir marta takrorlang, iltimos.", "ru": "Повторите ещё раз, пожалуйста."}, {"id": "everyday-3", "category": "everyday", "uz": "Tushunmadim.", "ru": "Я не понимаю."}, {"id": "everyday-4", "category": "everyday", "uz": "Yozib bera olasizmi?", "ru": "Можете написать?"}, {"id": "everyday-5", "category": "everyday", "uz": "Hozir soat necha?", "ru": "Который сейчас час?"}, {"id": "everyday-6", "category": "everyday", "uz": "Telefonim quvvati tugadi.", "ru": "У меня разрядился телефон."}, {"id": "everyday-7", "category": "everyday", "uz": "Telefonimni quvvatlasam bo‘ladimi?", "ru": "Можно зарядить телефон?"}, {"id": "everyday-8", "category": "everyday", "uz": "Men biroz kechikaman.", "ru": "Я немного опоздаю."}, {"id": "everyday-9", "category": "everyday", "uz": "Shu yerda kutib turing, iltimos.", "ru": "Подождите здесь, пожалуйста."}, {"id": "everyday-10", "category": "everyday", "uz": "Yaxshi kun tilayman!", "ru": "Хорошего вам дня!"}]
+[
+  {
+    "id": "greetings-1",
+    "category": "greetings",
+    "uz": "Assalomu alaykum!",
+    "ru": "Здравствуйте!"
+  },
+  { "id": "greetings-2", "category": "greetings", "uz": "Xayrli tong!", "ru": "Доброе утро!" },
+  { "id": "greetings-3", "category": "greetings", "uz": "Xayrli kun!", "ru": "Добрый день!" },
+  { "id": "greetings-4", "category": "greetings", "uz": "Xayrli kech!", "ru": "Добрый вечер!" },
+  {
+    "id": "greetings-5",
+    "category": "greetings",
+    "uz": "Tanishganimdan xursandman.",
+    "ru": "Рад с вами познакомиться."
+  },
+  { "id": "greetings-6", "category": "greetings", "uz": "Ismingiz nima?", "ru": "Как вас зовут?" },
+  {
+    "id": "greetings-7",
+    "category": "greetings",
+    "uz": "Mening ismim Davron.",
+    "ru": "Меня зовут Даврон."
+  },
+  { "id": "greetings-8", "category": "greetings", "uz": "Katta rahmat!", "ru": "Большое спасибо!" },
+  { "id": "greetings-9", "category": "greetings", "uz": "Iltimos.", "ru": "Пожалуйста." },
+  {
+    "id": "greetings-10",
+    "category": "greetings",
+    "uz": "Xayr, ko‘rishguncha!",
+    "ru": "До свидания, до встречи!"
+  },
+  {
+    "id": "transport-1",
+    "category": "transport",
+    "uz": "Eng yaqin metro bekati qayerda?",
+    "ru": "Где ближайшая станция метро?"
+  },
+  {
+    "id": "transport-2",
+    "category": "transport",
+    "uz": "Bu avtobus markazga boradimi?",
+    "ru": "Этот автобус идёт в центр?"
+  },
+  {
+    "id": "transport-3",
+    "category": "transport",
+    "uz": "Yo‘l haqi qancha?",
+    "ru": "Сколько стоит проезд?"
+  },
+  {
+    "id": "transport-4",
+    "category": "transport",
+    "uz": "Bitta chipta bering, iltimos.",
+    "ru": "Один билет, пожалуйста."
+  },
+  {
+    "id": "transport-5",
+    "category": "transport",
+    "uz": "Keyingi bekatda tushaman.",
+    "ru": "Я выхожу на следующей остановке."
+  },
+  {
+    "id": "transport-6",
+    "category": "transport",
+    "uz": "Aeroportga qanday borsam bo‘ladi?",
+    "ru": "Как добраться до аэропорта?"
+  },
+  {
+    "id": "transport-7",
+    "category": "transport",
+    "uz": "Qaysi yo‘nalishga o‘tishim kerak?",
+    "ru": "На какую линию мне нужно пересесть?"
+  },
+  {
+    "id": "transport-8",
+    "category": "transport",
+    "uz": "Oxirgi poyezd soat nechada?",
+    "ru": "Во сколько последний поезд?"
+  },
+  {
+    "id": "transport-9",
+    "category": "transport",
+    "uz": "Shu manzilga olib boring, iltimos.",
+    "ru": "Отвезите меня по этому адресу, пожалуйста."
+  },
+  {
+    "id": "transport-10",
+    "category": "transport",
+    "uz": "Karta bilan to‘lasam bo‘ladimi?",
+    "ru": "Можно оплатить картой?"
+  },
+  {
+    "id": "hotel-1",
+    "category": "hotel",
+    "uz": "Men xona band qilgan edim.",
+    "ru": "У меня забронирован номер."
+  },
+  {
+    "id": "hotel-2",
+    "category": "hotel",
+    "uz": "Bir kishilik bo‘sh xona bormi?",
+    "ru": "У вас есть свободный одноместный номер?"
+  },
+  {
+    "id": "hotel-3",
+    "category": "hotel",
+    "uz": "Bir kecha turish qancha turadi?",
+    "ru": "Сколько стоит проживание за одну ночь?"
+  },
+  {
+    "id": "hotel-4",
+    "category": "hotel",
+    "uz": "Nonushta narxga kiradimi?",
+    "ru": "Завтрак включён в стоимость?"
+  },
+  {
+    "id": "hotel-5",
+    "category": "hotel",
+    "uz": "Wi-Fi parolini ayting, iltimos.",
+    "ru": "Скажите пароль от Wi-Fi, пожалуйста."
+  },
+  {
+    "id": "hotel-6",
+    "category": "hotel",
+    "uz": "Xonadan soat nechada chiqish kerak?",
+    "ru": "Во сколько нужно освободить номер?"
+  },
+  {
+    "id": "hotel-7",
+    "category": "hotel",
+    "uz": "Xonamda issiq suv yo‘q.",
+    "ru": "В моём номере нет горячей воды."
+  },
+  {
+    "id": "hotel-8",
+    "category": "hotel",
+    "uz": "Qo‘shimcha sochiq bersangiz.",
+    "ru": "Дайте, пожалуйста, дополнительное полотенце."
+  },
+  {
+    "id": "hotel-9",
+    "category": "hotel",
+    "uz": "Yukimni shu yerda qoldirsam bo‘ladimi?",
+    "ru": "Можно оставить здесь багаж?"
+  },
+  {
+    "id": "hotel-10",
+    "category": "hotel",
+    "uz": "Yana bir kechaga qolmoqchiman.",
+    "ru": "Я хочу остаться ещё на одну ночь."
+  },
+  {
+    "id": "restaurant-1",
+    "category": "restaurant",
+    "uz": "Menyuni bersangiz, iltimos.",
+    "ru": "Принесите меню, пожалуйста."
+  },
+  {
+    "id": "restaurant-2",
+    "category": "restaurant",
+    "uz": "Ikki kishilik stol bormi?",
+    "ru": "Есть столик на двоих?"
+  },
+  {
+    "id": "restaurant-3",
+    "category": "restaurant",
+    "uz": "Nimani tavsiya qilasiz?",
+    "ru": "Что вы посоветуете?"
+  },
+  {
+    "id": "restaurant-4",
+    "category": "restaurant",
+    "uz": "Bu taomda cho‘chqa go‘shti bormi?",
+    "ru": "В этом блюде есть свинина?"
+  },
+  {
+    "id": "restaurant-5",
+    "category": "restaurant",
+    "uz": "Menga yong‘oq mumkin emas, allergiyam bor.",
+    "ru": "У меня аллергия на орехи."
+  },
+  {
+    "id": "restaurant-6",
+    "category": "restaurant",
+    "uz": "Go‘shtsiz taom bormi?",
+    "ru": "Есть блюда без мяса?"
+  },
+  {
+    "id": "restaurant-7",
+    "category": "restaurant",
+    "uz": "Gazsiz suv bering, iltimos.",
+    "ru": "Воду без газа, пожалуйста."
+  },
+  {
+    "id": "restaurant-8",
+    "category": "restaurant",
+    "uz": "Hisobni olib keling, iltimos.",
+    "ru": "Принесите счёт, пожалуйста."
+  },
+  {
+    "id": "restaurant-9",
+    "category": "restaurant",
+    "uz": "O‘zim bilan olib ketish uchun o‘rab bering.",
+    "ru": "Упакуйте с собой, пожалуйста."
+  },
+  {
+    "id": "restaurant-10",
+    "category": "restaurant",
+    "uz": "Juda mazali ekan, rahmat!",
+    "ru": "Очень вкусно, спасибо!"
+  },
+  {
+    "id": "shopping-1",
+    "category": "shopping",
+    "uz": "Bu qancha turadi?",
+    "ru": "Сколько это стоит?"
+  },
+  {
+    "id": "shopping-2",
+    "category": "shopping",
+    "uz": "Boshqa o‘lchami bormi?",
+    "ru": "Есть другой размер?"
+  },
+  {
+    "id": "shopping-3",
+    "category": "shopping",
+    "uz": "Buni kiyib ko‘rsam bo‘ladimi?",
+    "ru": "Можно это примерить?"
+  },
+  {
+    "id": "shopping-4",
+    "category": "shopping",
+    "uz": "Kiyib ko‘rish xonasi qayerda?",
+    "ru": "Где примерочная?"
+  },
+  {
+    "id": "shopping-5",
+    "category": "shopping",
+    "uz": "Boshqa rangi bormi?",
+    "ru": "Есть другой цвет?"
+  },
+  {
+    "id": "shopping-6",
+    "category": "shopping",
+    "uz": "Arzonrog‘i bormi?",
+    "ru": "Есть что-нибудь подешевле?"
+  },
+  {
+    "id": "shopping-7",
+    "category": "shopping",
+    "uz": "Paket kerak emas, rahmat.",
+    "ru": "Пакет не нужен, спасибо."
+  },
+  {
+    "id": "shopping-8",
+    "category": "shopping",
+    "uz": "Chekni bering, iltimos.",
+    "ru": "Дайте чек, пожалуйста."
+  },
+  {
+    "id": "shopping-9",
+    "category": "shopping",
+    "uz": "Buni qaytarib bermoqchiman.",
+    "ru": "Я хочу это вернуть."
+  },
+  {
+    "id": "shopping-10",
+    "category": "shopping",
+    "uz": "Do‘kon soat nechagacha ishlaydi?",
+    "ru": "До скольких работает магазин?"
+  },
+  {
+    "id": "directions-1",
+    "category": "directions",
+    "uz": "Kechirasiz, menga yordam bera olasizmi?",
+    "ru": "Извините, вы можете мне помочь?"
+  },
+  {
+    "id": "directions-2",
+    "category": "directions",
+    "uz": "Bu manzilga qanday borsam bo‘ladi?",
+    "ru": "Как добраться до этого адреса?"
+  },
+  {
+    "id": "directions-3",
+    "category": "directions",
+    "uz": "Xaritada ko‘rsatib bering, iltimos.",
+    "ru": "Покажите на карте, пожалуйста."
+  },
+  {
+    "id": "directions-4",
+    "category": "directions",
+    "uz": "Piyoda borsam uzoqmi?",
+    "ru": "Далеко ли идти пешком?"
+  },
+  {
+    "id": "directions-5",
+    "category": "directions",
+    "uz": "To‘g‘ri yurishim kerakmi?",
+    "ru": "Мне нужно идти прямо?"
+  },
+  {
+    "id": "directions-6",
+    "category": "directions",
+    "uz": "O‘ngga burilishim kerakmi?",
+    "ru": "Мне нужно повернуть направо?"
+  },
+  {
+    "id": "directions-7",
+    "category": "directions",
+    "uz": "Chapga buriling.",
+    "ru": "Поверните налево."
+  },
+  {
+    "id": "directions-8",
+    "category": "directions",
+    "uz": "Yaqinda dorixona bormi?",
+    "ru": "Поблизости есть аптека?"
+  },
+  {
+    "id": "directions-9",
+    "category": "directions",
+    "uz": "Hojatxona qayerda?",
+    "ru": "Где туалет?"
+  },
+  {
+    "id": "directions-10",
+    "category": "directions",
+    "uz": "Men adashib qoldim.",
+    "ru": "Я заблудился."
+  },
+  {
+    "id": "university-1",
+    "category": "university",
+    "uz": "Qabul bo‘limi qayerda?",
+    "ru": "Где приёмная комиссия?"
+  },
+  {
+    "id": "university-2",
+    "category": "university",
+    "uz": "Men O‘zbekistondan kelgan talabaman.",
+    "ru": "Я студент из Узбекистана."
+  },
+  {
+    "id": "university-3",
+    "category": "university",
+    "uz": "Dars soat nechada boshlanadi?",
+    "ru": "Во сколько начинается занятие?"
+  },
+  {
+    "id": "university-4",
+    "category": "university",
+    "uz": "Dars jadvalini qayerdan topsam bo‘ladi?",
+    "ru": "Где можно найти расписание занятий?"
+  },
+  {
+    "id": "university-5",
+    "category": "university",
+    "uz": "Kutubxonaga qanday a’zo bo‘lsam bo‘ladi?",
+    "ru": "Как записаться в библиотеку?"
+  },
+  {
+    "id": "university-6",
+    "category": "university",
+    "uz": "Talabalik guvohnomasini olmoqchiman.",
+    "ru": "Я хочу получить студенческий билет."
+  },
+  {
+    "id": "university-7",
+    "category": "university",
+    "uz": "Yotoqxonadan joy olish mumkinmi?",
+    "ru": "Можно получить место в общежитии?"
+  },
+  {
+    "id": "university-8",
+    "category": "university",
+    "uz": "Vazifani qayta tushuntirib bering, iltimos.",
+    "ru": "Объясните задание ещё раз, пожалуйста."
+  },
+  {
+    "id": "university-9",
+    "category": "university",
+    "uz": "Imtihon qachon bo‘ladi?",
+    "ru": "Когда будет экзамен?"
+  },
+  {
+    "id": "university-10",
+    "category": "university",
+    "uz": "O‘qituvchi bilan gaplashsam bo‘ladimi?",
+    "ru": "Можно поговорить с преподавателем?"
+  },
+  {
+    "id": "documents-1",
+    "category": "documents",
+    "uz": "Mana mening pasportim.",
+    "ru": "Вот мой паспорт."
+  },
+  {
+    "id": "documents-2",
+    "category": "documents",
+    "uz": "Qaysi hujjatlar kerak?",
+    "ru": "Какие документы нужны?"
+  },
+  {
+    "id": "documents-3",
+    "category": "documents",
+    "uz": "Arizani to‘ldirishga yordam bering, iltimos.",
+    "ru": "Помогите заполнить заявление, пожалуйста."
+  },
+  {
+    "id": "documents-4",
+    "category": "documents",
+    "uz": "Hujjatning nusxasi kerakmi?",
+    "ru": "Нужна копия документа?"
+  },
+  {
+    "id": "documents-5",
+    "category": "documents",
+    "uz": "Tarjimasini notarial tasdiqlash kerakmi?",
+    "ru": "Нужно нотариально заверить перевод?"
+  },
+  {
+    "id": "documents-6",
+    "category": "documents",
+    "uz": "Ro‘yxatdan o‘tish uchun qayerga boraman?",
+    "ru": "Куда обратиться для регистрации?"
+  },
+  {
+    "id": "documents-7",
+    "category": "documents",
+    "uz": "Hujjatimni yo‘qotib qo‘ydim.",
+    "ru": "Я потерял документ."
+  },
+  {
+    "id": "documents-8",
+    "category": "documents",
+    "uz": "Elchixonaga qo‘ng‘iroq qilishim kerak.",
+    "ru": "Мне нужно позвонить в посольство."
+  },
+  {
+    "id": "documents-9",
+    "category": "documents",
+    "uz": "Hujjatlar qachon tayyor bo‘ladi?",
+    "ru": "Когда будут готовы документы?"
+  },
+  {
+    "id": "documents-10",
+    "category": "documents",
+    "uz": "Shu yerga imzo qo‘yishim kerakmi?",
+    "ru": "Мне нужно подписать здесь?"
+  },
+  { "id": "emergency-1", "category": "emergency", "uz": "Yordam bering!", "ru": "Помогите!" },
+  {
+    "id": "emergency-2",
+    "category": "emergency",
+    "uz": "Tez yordam chaqiring!",
+    "ru": "Вызовите скорую помощь!"
+  },
+  {
+    "id": "emergency-3",
+    "category": "emergency",
+    "uz": "Politsiyani chaqiring!",
+    "ru": "Вызовите полицию!"
+  },
+  {
+    "id": "emergency-4",
+    "category": "emergency",
+    "uz": "Menga shifokor kerak.",
+    "ru": "Мне нужен врач."
+  },
+  {
+    "id": "emergency-5",
+    "category": "emergency",
+    "uz": "O‘zimni yomon his qilyapman.",
+    "ru": "Я плохо себя чувствую."
+  },
+  {
+    "id": "emergency-6",
+    "category": "emergency",
+    "uz": "Bu yerim og‘riyapti.",
+    "ru": "У меня болит вот здесь."
+  },
+  {
+    "id": "emergency-7",
+    "category": "emergency",
+    "uz": "Telefonimni o‘g‘irlashdi.",
+    "ru": "У меня украли телефон."
+  },
+  {
+    "id": "emergency-8",
+    "category": "emergency",
+    "uz": "Men rus tilida yaxshi gapira olmayman.",
+    "ru": "Я плохо говорю по-русски."
+  },
+  {
+    "id": "emergency-9",
+    "category": "emergency",
+    "uz": "Yaqinlarimga qo‘ng‘iroq qilishim kerak.",
+    "ru": "Мне нужно позвонить близким."
+  },
+  {
+    "id": "emergency-10",
+    "category": "emergency",
+    "uz": "Yong‘in chiqdi! Tashqariga chiqing!",
+    "ru": "Пожар! Выходите на улицу!"
+  },
+  {
+    "id": "everyday-1",
+    "category": "everyday",
+    "uz": "Sekinroq gapiring, iltimos.",
+    "ru": "Говорите помедленнее, пожалуйста."
+  },
+  {
+    "id": "everyday-2",
+    "category": "everyday",
+    "uz": "Yana bir marta takrorlang, iltimos.",
+    "ru": "Повторите ещё раз, пожалуйста."
+  },
+  { "id": "everyday-3", "category": "everyday", "uz": "Tushunmadim.", "ru": "Я не понимаю." },
+  {
+    "id": "everyday-4",
+    "category": "everyday",
+    "uz": "Yozib bera olasizmi?",
+    "ru": "Можете написать?"
+  },
+  {
+    "id": "everyday-5",
+    "category": "everyday",
+    "uz": "Hozir soat necha?",
+    "ru": "Который сейчас час?"
+  },
+  {
+    "id": "everyday-6",
+    "category": "everyday",
+    "uz": "Telefonim quvvati tugadi.",
+    "ru": "У меня разрядился телефон."
+  },
+  {
+    "id": "everyday-7",
+    "category": "everyday",
+    "uz": "Telefonimni quvvatlasam bo‘ladimi?",
+    "ru": "Можно зарядить телефон?"
+  },
+  {
+    "id": "everyday-8",
+    "category": "everyday",
+    "uz": "Men biroz kechikaman.",
+    "ru": "Я немного опоздаю."
+  },
+  {
+    "id": "everyday-9",
+    "category": "everyday",
+    "uz": "Shu yerda kutib turing, iltimos.",
+    "ru": "Подождите здесь, пожалуйста."
+  },
+  {
+    "id": "everyday-10",
+    "category": "everyday",
+    "uz": "Yaxshi kun tilayman!",
+    "ru": "Хорошего вам дня!"
+  }
+]
