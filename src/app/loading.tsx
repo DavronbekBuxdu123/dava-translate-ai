@@ -1,0 +1,1 @@
+export default function Loading() { return <div className="skeleton-page" aria-label="Yuklanmoqda" aria-busy="true"><div className="skeleton hero-skeleton"/><div className="skeleton translator-skeleton"/></div>; }
