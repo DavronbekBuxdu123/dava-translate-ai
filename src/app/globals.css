@@ -2707,3 +2707,20 @@ textarea {
     transform: none;
   }
 }
+
+.speech-source {
+  font-size: 9px;
+  color: var(--muted);
+  white-space: nowrap;
+  margin-left: 4px;
+}
+.device-voice-fallback {
+  display: block;
+  margin-top: 8px;
+  padding: 5px 7px;
+  border-radius: 5px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-size: 10px;
+}

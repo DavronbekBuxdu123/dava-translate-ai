@@ -5,6 +5,7 @@ import { usePreferences } from './use-preferences';
 export function useSpeech() {
   const [state, setState] = useState<'idle' | 'loading' | 'playing' | 'paused'>('idle');
   const [error, setError] = useState('');
+  const [source, setSource] = useState<'ai' | 'device' | null>(null);
   const [preferences] = usePreferences();
   const audio = useRef<HTMLAudioElement | null>(null);
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
@@ -33,14 +34,17 @@ export function useSpeech() {
     },
     [],
   );
-  async function play(text: string, language: Language) {
+  async function play(text: string, language: Language, mode: 'ai' | 'device' = 'ai') {
     stop();
     const current = generation.current;
     setError('');
     setState('loading');
+    setSource(null);
     try {
-      let voices = typeof speechSynthesis !== 'undefined' ? speechSynthesis.getVoices() : [];
-      if (!voices.length && typeof speechSynthesis !== 'undefined') {
+      const useDevice = mode === 'device' || !navigator.onLine;
+      let voices =
+        useDevice && typeof speechSynthesis !== 'undefined' ? speechSynthesis.getVoices() : [];
+      if (useDevice && !voices.length && typeof speechSynthesis !== 'undefined') {
         await new Promise<void>((resolve) => {
           const done = () => {
             clearTimeout(timeout);
@@ -69,14 +73,16 @@ export function useSpeech() {
             setError('Qurilma ovozni ijro eta olmadi.');
           }
         };
+        setSource('device');
         speechSynthesis.speak(speech);
         setState('playing');
         return;
       }
-      if (language === 'uz')
+      if (useDevice)
         throw new Error(
-          'Qurilmangizda o‘zbekcha ovoz mavjud emas. Matn tarjimasidan foydalanishingiz mumkin.',
+          `Qurilmangizda ${language === 'uz' ? 'o‘zbekcha' : 'ruscha'} ovoz mavjud emas. Matn tarjimasidan foydalanishingiz mumkin.`,
         );
+      if (text.length > 1000) throw new Error('AI ovozi uchun 1000 belgigacha matn tanlang.');
       const controller = new AbortController();
       request.current = controller;
       const response = await fetch('/api/speech', {
@@ -100,7 +106,12 @@ export function useSpeech() {
         setState('idle');
         setError('Audio ijro etilmadi.');
       };
+      setSource('ai');
       await player.play();
+      if (current !== generation.current) {
+        player.pause();
+        return;
+      }
       setState('playing');
     } catch (e) {
       if (current !== generation.current) return;
@@ -119,5 +130,13 @@ export function useSpeech() {
       setState('playing');
     }
   }
-  return { state, error, play, stop, toggle };
+  return {
+    state,
+    error,
+    source,
+    play,
+    playDevice: (text: string, language: Language) => play(text, language, 'device'),
+    stop,
+    toggle,
+  };
 }

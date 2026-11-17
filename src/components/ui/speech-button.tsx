@@ -10,7 +10,7 @@ export function SpeechButton({ text, language }: { text: string; language: Langu
       <Button
         variant="ghost"
         size="icon"
-        title="Talaffuzni eshitish"
+        title="AI ovozida eshitish"
         aria-label={
           speech.state === 'playing'
             ? 'Ovozni pauza qilish'
@@ -40,9 +40,21 @@ export function SpeechButton({ text, language }: { text: string; language: Langu
           <Square />
         </Button>
       )}
+      {speech.state !== 'idle' && speech.state !== 'loading' && (
+        <small className="speech-source">
+          {speech.source === 'ai' ? 'AI ovozi' : 'Qurilma ovozi'}
+        </small>
+      )}
       {speech.error && (
         <span role="status" className="speech-error">
           {speech.error}
+          <button
+            type="button"
+            className="device-voice-fallback"
+            onClick={() => void speech.playDevice(text, language)}
+          >
+            Qurilma ovozida eshitish
+          </button>
         </span>
       )}
     </span>
