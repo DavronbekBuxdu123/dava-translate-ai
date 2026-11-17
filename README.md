@@ -20,7 +20,35 @@ npm run dev
 
 Brauzerda http://localhost:3000 ni oching. `.env` Git’ga kiritilmaydi. Kalitlarni chatga, commitga yoki `NEXT_PUBLIC_*` o‘zgaruvchisiga yozmang.
 
-**Servis kalitlarisiz:** UI, mavzu, lokal sozlamalar va iboralar ishlaydi. Baza ulanmaganida tarix/suhbat/API aniq xato qaytaradi. `OPENAI_API_KEY` yo‘q bo‘lsa AI ishlamaydi; soxta natija berilmaydi. **OpenAI API billing ChatGPT Plus obunasidan alohida.**
+**Servis kalitlarisiz:** UI, mavzu, lokal sozlamalar va iboralar ishlaydi. Baza ulanmaganida tarix/suhbat/API aniq xato qaytaradi. Tanlangan tarjima provayderining kaliti yo‘q bo‘lsa tarjima ishlamaydi; soxta natija berilmaydi. Gemini matn tarjimasi uchun OpenAI kaliti talab qilinmaydi. **OpenAI API billing ChatGPT Plus obunasidan alohida.**
+
+## Gemini bilan lokal tarjimani ulash
+
+Google AI Studio’dan olingan kalitni faqat kompyuteringizdagi `.env`ga kiriting:
+
+```env
+TRANSLATION_PROVIDER=gemini
+GEMINI_API_KEY=haqiqiy_kalitingiz
+GEMINI_TRANSLATION_MODEL=gemini-3.5-flash-lite
+```
+
+Neon `DATABASE_URL` va `DIRECT_URL` qiymatlarini saqlang. `npm run db:migrate` oldin bajarilgan bo‘lishi kerak. So‘ng serverni to‘xtatib, `npm run dev` bilan qayta yoqing. Gemini matn tarjimasi tezkor tarjimon va suhbatdagi matn xabarlarida ishlaydi. Kalit faqat Google API’ga serverdagi HTTP header orqali yuboriladi, brauzerga berilmaydi. Javob JSON schema va Zod bilan tekshiriladi. 25 soniya timeout; boshqa provayderga avtomatik pullik fallback yo‘q.
+
+**Mikrofon transkripsiyasi va server AI talaffuzi hozircha OpenAI’da qoladi.** OpenAI balansisiz matn yozib tarjima qiling. Qurilmada ruscha voice mavjud bo‘lsa, ruscha eshittirish OpenAI’siz ishlaydi. Gemini bepul kvotasi hisob, region va modelga bog‘liq; mavjud kvotani [AI Studio](https://aistudio.google.com/) orqali tekshiring. `429` kvota tugashi yoki so‘rovlar tezligi limitini bildirishi mumkin.
+
+Avval `.env`ga `GEMINI_TRANSLATION_MODEL=gemini-2.5-flash` yozgan bo‘lsangiz, uni `gemini-3.5-flash-lite`ga yangilang. Google hujjatlarida 2.5 Flash deprecated deb ko‘rsatilgan; yangi default amaldagi Flash-Lite modelidir. [Model](https://aistudio.google.com/docs/models/gemini-3.5-flash-lite) va [kvota/narxlar](https://aistudio.google.com/docs/pricing#gemini-3.5-flash-lite) hisobingiz uchun tekshiriladi.
+
+Mavjud lokal nusxani yangilash (PowerShell’da ham birma-bir):
+
+```bash
+git pull --ff-only
+npm ci
+npm run dev
+```
+
+Bu Gemini yangilanishida yangi paket yoki schema migration yo‘q; `npm ci` majburiy emas, lekin lock faylga mos muhitni qayta tiklaydi. Git lokal `.env`ni almashtirmaydi. `.env.example`ni yana `.env`ga ko‘chirib, o‘z kalitlaringizni ustidan yozmang. Lokal kod o‘zgarishlari sabab pull rad qilinsa, ularni o‘chirib yubormasdan avval ko‘rib chiqing.
+
+`TRANSLATION_PROVIDER=openai` eski tarjima provayderini tanlaydi; o‘zgaruvchi umuman yo‘q bo‘lsa ham eski OpenAI yo‘li saqlanadi. Provider yoki model almashtirilganda tarjima keshi alohida yuritiladi. Barcha AI endpointlar production’da Upstash bilan himoyalanishi shart, Gemini bepul kvota ishlatsa ham.
 
 ## Tayyor funksiyalar
 
@@ -39,6 +67,9 @@ Brauzerda http://localhost:3000 ni oching. `.env` Git’ga kiritilmaydi. Kalitla
 | ---------------------------- | --------------------------------------------------------------------------------- |
 | `DATABASE_URL`               | Neon pooled runtime connection string, `sslmode=require` bilan                    |
 | `DIRECT_URL`                 | Neon direct connection, migrations uchun. Bo‘sh bo‘lsa `DATABASE_URL` ishlatiladi |
+| `TRANSLATION_PROVIDER`       | `gemini` yoki `openai`; o‘zgaruvchi yo‘q bo‘lsa `openai`                          |
+| `GEMINI_API_KEY`             | Google AI Studio server kaliti, Gemini tarjima uchun                              |
+| `GEMINI_TRANSLATION_MODEL`   | Default `gemini-3.5-flash-lite`                                                   |
 | `OPENAI_API_KEY`             | Faqat serverda ishlatiladigan OpenAI API kaliti                                   |
 | `OPENAI_TRANSLATION_MODEL`   | Default `gpt-4.1-mini`, structured output qo‘llashi kerak                         |
 | `OPENAI_TRANSCRIPTION_MODEL` | Default `gpt-4o-mini-transcribe`                                                  |
@@ -49,7 +80,7 @@ Brauzerda http://localhost:3000 ni oching. `.env` Git’ga kiritilmaydi. Kalitla
 | `APP_ORIGIN`                 | Ilovaning aniq tashqi origin’i, masalan `https://dava.example.com`                |
 | `AI_DAILY_LIMIT`             | Barcha mehmonlar uchun umumiy pullik so‘rov limiti, default 500/kun               |
 
-**Production’da Upstash juftligi sozlanmasa pullik AI endpointlar 503 bilan yopiladi.** Bu xavfsiz default. Development’da xotiradagi 30/min cheklov ishlaydi. Production’da sessiya va platforma IP xeshi bo‘yicha 30/min, shuningdek cookie almashtirishdan mustaqil umumiy kunlik AI byudjeti ishlatiladi. Upstash timeout yoki xatosida ham AI so‘rovlariga ruxsat berilmaydi. Bu anonim MVP; katta trafikda provayder spending limit, kuzatuv va qo‘shimcha bot himoyasini yoqing.
+**Production’da Upstash juftligi sozlanmasa AI endpointlar 503 bilan yopiladi.** Bu xavfsiz default. Development’da xotiradagi 30/min cheklov ishlaydi. Production’da sessiya va platforma IP xeshi bo‘yicha 30/min, shuningdek cookie almashtirishdan mustaqil umumiy kunlik AI byudjeti ishlatiladi. Upstash timeout yoki xatosida ham AI so‘rovlariga ruxsat berilmaydi. Bu anonim MVP; katta trafikda provayder spending limit, kuzatuv va qo‘shimcha bot himoyasini yoqing.
 
 Runtime Prisma 7 `@prisma/adapter-pg` orqali PostgreSQL’ga ulanadi. Migration URL `prisma.config.ts` orqali olinadi. Pool maksimumi har instance uchun 5; Neon pooled endpoint tavsiya qilinadi.
 
@@ -78,7 +109,7 @@ npm run db:seed
 6. **Deploy** qiling. Preview deploymentlar uchun `APP_ORIGIN` ni o‘sha preview origin’iga mos sozlang; production origin preview’da mutating API’larni ruxsat bermaydi.
 7. Custom domain uchun **Project Settings → Domains** orqali domain qo‘shing, Vercel ko‘rsatgan DNS yozuvini kiriting. HTTPS faollashgach `APP_ORIGIN` ni yangilang va redeploy qiling.
 
-Server AI route’lar `maxDuration = 60`; OpenAI chaqiriqlari 25 soniya timeout va maksimum bitta transient retry bilan bajariladi. Hosting plan’ingizdagi runtime muddatini tekshiring. Audio 4 MB (multipart bilan taxminan 4.21 MB) dan kichik; Vercel 4.5 MB request limitiga sig‘adi. Server audio fayl saqlamaydi. HTTPS yoki localhost mikrofon/clipboard uchun shart.
+Server AI route’lar `maxDuration = 60`; OpenAI chaqiriqlari 25 soniya timeout va maksimum bitta transient retry bilan bajariladi. Gemini chaqirig‘i ham 25 soniyada cheklanadi, avtomatik retry yo‘q. Hosting plan’ingizdagi runtime muddatini tekshiring. Audio 4 MB (multipart bilan taxminan 4.21 MB) dan kichik; Vercel 4.5 MB request limitiga sig‘adi. Server audio fayl saqlamaydi. HTTPS yoki localhost mikrofon/clipboard uchun shart.
 
 ## Xavfsizlik va maxfiylik
 
@@ -86,7 +117,7 @@ Server AI route’lar `maxDuration = 60`; OpenAI chaqiriqlari 25 soniya timeout 
 - Barcha tarix/sevimli/suhbat amallari guest ownership bilan cheklangan. Begona ID uchun 404.
 - Mutating API same-origin tekshiruvi; JSON va audio hajm/type validatsiyasi. Xatolarda credential yoki provayder ichki exception’i chiqmaydi. AI matni HTML sifatida render qilinmaydi.
 - Cookie o‘chirilsa eski tarixga qayta bog‘lanib bo‘lmaydi. Bu authsiz MVP; keyingi akkaunt migratsiyasi uchun `GuestSession` alohida model sifatida ajratilgan.
-- Ovoz va matn OpenAI’ga yuboriladi. DAVA raw audio’ni doimiy saqlamaydi; provayderning [data controls](https://platform.openai.com/docs/guides/your-data) va [privacy](https://openai.com/policies/privacy-policy/) siyosati amal qiladi.
+- Tarjima matni tanlangan Gemini yoki OpenAI provayderiga yuboriladi; audio transkripsiya va server TTS OpenAI orqali bajariladi. Gemini uchun [Google API terms](https://ai.google.dev/gemini-api/terms) amal qiladi, bepul va pullik xizmatdagi ma’lumotlardan foydalanish shartlari farq qiladi. DAVA raw audio’ni doimiy saqlamaydi; provayderning [data controls](https://platform.openai.com/docs/guides/your-data) va [privacy](https://openai.com/policies/privacy-policy/) siyosati amal qiladi.
 - OpenAI va Upstash billing limitlarini servislarning o‘zida ham o‘rnating. Loglarga matn, audio, connection string yoki API kalit yozmang.
 
 ## Testlar
@@ -115,7 +146,7 @@ Unit/integration testlar validation, swap, favorite toggle, qidirish, guest cook
 Deploy’dan keyin alohida tekshiring:
 
 - [ ] Neon migration’lari qo‘llangan, guest A va B tarixlari ajratilgan.
-- [ ] Haqiqiy OpenAI kaliti bilan UZ→RU va RU→UZ tarjima: sonlar, ism, rasmiy/kundalik kontekst.
+- [ ] Haqiqiy tanlangan provayder kaliti bilan UZ→RU va RU→UZ tarjima: sonlar, ism, rasmiy/kundalik kontekst.
 - [ ] Desktop Chrome va Android Chrome’da haqiqiy o‘zbek/rus nutqi bilan mikrofon, rad etilgan permission va 60s limit.
 - [ ] Transkripsiyada Uzbek ISO til kodi provayder tomonidan rad qilinsa til parametrsiz fallback; noto‘g‘ri til majburlanmaydi.
 - [ ] Ruscha browser/AI talaffuz, autoplay bloklansa qo‘lda replay, mavjud `uz` voice va yo‘q `uz` voice holatlari.
@@ -145,6 +176,7 @@ Iboralarni o‘zgartirganda `src/data/phrases.json` va `public/offline/phrases.j
 
 ## Rasmiy API manbalari
 
+- [Gemini structured output](https://ai.google.dev/gemini-api/docs/structured-output)
 - [OpenAI structured outputs](https://platform.openai.com/docs/guides/structured-outputs)
 - [Speech to text](https://platform.openai.com/docs/guides/speech-to-text)
 - [Text to speech](https://platform.openai.com/docs/guides/text-to-speech)

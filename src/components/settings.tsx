@@ -117,9 +117,9 @@ export function SettingsView() {
             ishlagach tarix va suhbatlarni alohida o‘chiring.
           </p>
           <p>
-            Tarjima matni va siz yozgan audio qayta ishlash uchun OpenAI’ga yuboriladi. DAVA audio
-            yozuvlarni doimiy saqlamaydi. Provayder ma’lumotlarni o‘z siyosatiga binoan qayta
-            ishlaydi.
+            Tarjima matni tanlangan Gemini yoki OpenAI xizmatiga yuboriladi. Audio transkripsiyasi
+            OpenAI orqali bajariladi. DAVA audio yozuvlarni doimiy saqlamaydi. Provayder
+            ma’lumotlarni o‘z siyosatiga binoan qayta ishlaydi.
           </p>
           <p>
             Oflayn keshda faqat ommaviy iboralar va ilova qobig‘i saqlanadi; shaxsiy API javoblari
@@ -127,6 +127,10 @@ export function SettingsView() {
           </p>
           <a href="https://openai.com/policies/privacy-policy/" target="_blank" rel="noreferrer">
             OpenAI maxfiylik siyosati ↗
+          </a>
+          <br />
+          <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noreferrer">
+            Gemini ma’lumotlardan foydalanish shartlari ↗
           </a>
         </section>
         <section className="panel settings-panel">
