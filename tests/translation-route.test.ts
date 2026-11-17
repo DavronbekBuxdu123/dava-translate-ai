@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
 const { findFirst, create, provider, contextMock } = vi.hoisted(() => ({
   findFirst: vi.fn(),
@@ -56,4 +56,20 @@ it('saves new AI translation under the resolved guest with the correct direction
       }),
     }),
   );
+});
+
+afterEach(() => vi.unstubAllEnvs());
+it('separates cached translations by provider and model', async () => {
+  const input = { text: 'Salom', sourceLang: 'uz' };
+  vi.stubEnv('TRANSLATION_PROVIDER', 'openai');
+  await POST(request(input));
+  const openaiKey = findFirst.mock.calls.at(-1)![0].where.requestKey;
+  vi.stubEnv('TRANSLATION_PROVIDER', 'gemini');
+  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'gemini-2.5-flash');
+  await POST(request(input));
+  const geminiKey = findFirst.mock.calls.at(-1)![0].where.requestKey;
+  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'another-model');
+  await POST(request(input));
+  const otherModelKey = findFirst.mock.calls.at(-1)![0].where.requestKey;
+  expect(new Set([openaiKey, geminiKey, otherModelKey]).size).toBe(3);
 });

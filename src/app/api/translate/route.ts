@@ -6,12 +6,15 @@ import { translationSchema } from '@/lib/validation';
 import { translate } from '@/lib/ai/translation';
 import { db } from '@/lib/db';
 import { opposite } from '@/types';
+import { translationConfig } from '@/lib/ai/translation-config';
 export const maxDuration = 60;
 export async function POST(request: NextRequest) {
   return route(async () => {
     const input = await readJson(request, translationSchema);
     const owner = await context(request, true);
-    const requestKey = createHash('sha256').update(JSON.stringify(input)).digest('hex');
+    const requestKey = createHash('sha256')
+      .update(JSON.stringify({ ...input, ...translationConfig() }))
+      .digest('hex');
     const existing = await db().translation.findFirst({
       where: { guestId: owner.id, requestKey, createdAt: { gte: new Date(Date.now() - 300000) } },
       include: { favorites: { select: { id: true } } },
