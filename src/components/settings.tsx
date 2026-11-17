@@ -118,8 +118,9 @@ export function SettingsView() {
           </p>
           <p>
             Tarjima matni tanlangan Gemini yoki OpenAI xizmatiga yuboriladi. Audio transkripsiyasi
-            OpenAI orqali bajariladi. DAVA audio yozuvlarni doimiy saqlamaydi. Provayder
-            ma’lumotlarni o‘z siyosatiga binoan qayta ishlaydi.
+            OpenAI orqali bajariladi. AI talaffuzi uchun matn tanlangan Gemini yoki OpenAI ovoz
+            xizmatiga yuboriladi. DAVA audio yozuvlarni doimiy saqlamaydi. Provayder ma’lumotlarni
+            o‘z siyosatiga binoan qayta ishlaydi.
           </p>
           <p>
             Oflayn keshda faqat ommaviy iboralar va ilova qobig‘i saqlanadi; shaxsiy API javoblari
