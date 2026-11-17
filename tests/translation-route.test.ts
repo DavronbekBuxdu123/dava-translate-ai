@@ -65,7 +65,7 @@ it('separates cached translations by provider and model', async () => {
   await POST(request(input));
   const openaiKey = findFirst.mock.calls.at(-1)![0].where.requestKey;
   vi.stubEnv('TRANSLATION_PROVIDER', 'gemini');
-  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'gemini-2.5-flash');
+  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'gemini-3.5-flash-lite');
   await POST(request(input));
   const geminiKey = findFirst.mock.calls.at(-1)![0].where.requestKey;
   vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'another-model');

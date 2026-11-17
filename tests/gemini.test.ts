@@ -7,7 +7,7 @@ const fetchMock = vi.fn();
 beforeEach(() => {
   vi.stubEnv('GEMINI_API_KEY', 'test-secret');
   vi.stubEnv('TRANSLATION_PROVIDER', 'gemini');
-  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'gemini-2.5-flash');
+  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'gemini-3.5-flash-lite');
   vi.stubGlobal('fetch', fetchMock);
   fetchMock.mockReset();
 });
@@ -34,7 +34,7 @@ it('uses server-side header authentication and validates structured output', asy
 });
 it('reports missing key without requesting the provider', async () => {
   vi.stubEnv('GEMINI_API_KEY', '');
-  await expect(translateGemini(input, 'gemini-2.5-flash')).rejects.toMatchObject({
+  await expect(translateGemini(input, 'gemini-3.5-flash-lite')).rejects.toMatchObject({
     code: 'AI_NOT_CONFIGURED',
   });
   expect(fetchMock).not.toHaveBeenCalled();
@@ -48,9 +48,9 @@ it.each([
   fetchMock.mockResolvedValue(
     Response.json({ error: { message: 'private provider details test-secret' } }, { status }),
   );
-  await expect(translateGemini(input, 'gemini-2.5-flash')).rejects.toMatchObject({ code });
+  await expect(translateGemini(input, 'gemini-3.5-flash-lite')).rejects.toMatchObject({ code });
   try {
-    await translateGemini(input, 'gemini-2.5-flash');
+    await translateGemini(input, 'gemini-3.5-flash-lite');
   } catch (error) {
     expect((error as Error).message).not.toContain('test-secret');
   }
@@ -64,13 +64,13 @@ it.each([
   },
 ])('rejects incomplete or malformed model output', async (body) => {
   fetchMock.mockResolvedValue(Response.json(body));
-  await expect(translateGemini(input, 'gemini-2.5-flash')).rejects.toMatchObject({
+  await expect(translateGemini(input, 'gemini-3.5-flash-lite')).rejects.toMatchObject({
     code: 'AI_OUTPUT',
   });
 });
 it('reports timeouts and does not automatically spend on another provider', async () => {
   fetchMock.mockRejectedValue(new DOMException('timeout', 'TimeoutError'));
-  await expect(translateGemini(input, 'gemini-2.5-flash')).rejects.toMatchObject({
+  await expect(translateGemini(input, 'gemini-3.5-flash-lite')).rejects.toMatchObject({
     code: 'AI_TIMEOUT',
   });
   expect(fetchMock).toHaveBeenCalledTimes(1);

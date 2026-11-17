@@ -12,7 +12,7 @@ export function translationConfig() {
   }
   const model =
     provider === 'gemini'
-      ? process.env.GEMINI_TRANSLATION_MODEL?.trim() || 'gemini-2.5-flash'
+      ? process.env.GEMINI_TRANSLATION_MODEL?.trim() || 'gemini-3.5-flash-lite'
       : process.env.OPENAI_TRANSLATION_MODEL?.trim() || 'gpt-4.1-mini';
   if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,120}$/.test(model)) {
     throw new AppError('AI_MODEL_CONFIG', 'Tarjima modeli nomi noto‘g‘ri sozlangan.', 503);

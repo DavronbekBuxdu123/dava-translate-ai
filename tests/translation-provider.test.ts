@@ -18,12 +18,12 @@ afterEach(() => {
 });
 it('dispatches both language directions to Gemini without requiring OpenAI', async () => {
   vi.stubEnv('TRANSLATION_PROVIDER', 'gemini');
-  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'gemini-2.5-flash');
+  vi.stubEnv('GEMINI_TRANSLATION_MODEL', 'gemini-3.5-flash-lite');
   vi.stubEnv('OPENAI_API_KEY', '');
   for (const sourceLang of ['uz', 'ru'] as const) {
     const input = { text: 'test', sourceLang, tone: 'formal' as const };
     await expect(translate(input)).resolves.toBe('Привет');
-    expect(gemini).toHaveBeenCalledWith(input, 'gemini-2.5-flash');
+    expect(gemini).toHaveBeenCalledWith(input, 'gemini-3.5-flash-lite');
   }
   expect(openai).not.toHaveBeenCalled();
 });
