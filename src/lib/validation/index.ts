@@ -7,7 +7,11 @@ export const translationSchema = z.object({
 });
 export const translationOutput = z.object({ translatedText: z.string().min(1).max(15000) });
 export const speechSchema = z.object({
-  text: z.string().trim().min(1).max(5000),
+  text: z
+    .string()
+    .trim()
+    .min(1)
+    .max(1000, 'Bir marta eshittirish uchun 1000 belgigacha matn tanlang.'),
   language: languageSchema,
 });
 export const favoriteSchema = z.object({ translationId: z.string().min(1).max(100) });
