@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError, type ZodType } from 'zod';
+import { isAllowedMutation } from '@/lib/origin';
 export class AppError extends Error {
   constructor(
     public code: string,
@@ -49,14 +50,7 @@ export async function route<T>(handler: () => Promise<T>) {
   }
 }
 export function sameOrigin(request: NextRequest) {
-  if (['GET', 'HEAD'].includes(request.method)) return;
-  const origin = request.headers.get('origin');
-  const expected = process.env.APP_ORIGIN || request.nextUrl.origin;
-  if (
-    !origin ||
-    origin !== new URL(expected).origin ||
-    request.headers.get('sec-fetch-site') === 'cross-site'
-  )
+  if (!isAllowedMutation(request))
     throw new AppError('ORIGIN', 'Bu so‘rovga ruxsat berilmagan.', 403);
 }
 export async function readJson<T>(request: NextRequest, schema: ZodType<T>): Promise<T> {
