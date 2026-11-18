@@ -157,7 +157,7 @@ npm run db:seed
 3. Install command: `npm ci`. Build: `npm run build`. Output directory: Next.js default.
 4. Yuqoridagi environment qiymatlarini Vercel Environment Variables’da kiriting. `APP_ORIGIN` ga yakuniy `https://...vercel.app` manzilini yoki custom domain’ni yozing (yo‘l va trailing slash talab qilinmaydi).
 5. Baza migration’ini yuqoridagi buyruq bilan deploymentdan oldin bir marta bajaring. Build har safar client’ni generate qiladi; production schema’ni yashirincha o‘zgartirmaydi.
-6. **Deploy** qiling. Preview deploymentlar uchun `APP_ORIGIN` ni o‘sha preview origin’iga mos sozlang; production origin preview’da mutating API’larni ruxsat bermaydi.
+6. **Deploy** qiling. Vercel’da shu loyihaning `VERCEL_URL`, `VERCEL_BRANCH_URL` va `VERCEL_PROJECT_PRODUCTION_URL` qiymatlari aniq origin sifatida avtomatik tan olinadi. Custom domain uchun `APP_ORIGIN`ni moslang; boshqa loyihalarning `*.vercel.app` domenlari ruxsat olmaydi.
 7. Custom domain uchun **Project Settings → Domains** orqali domain qo‘shing, Vercel ko‘rsatgan DNS yozuvini kiriting. HTTPS faollashgach `APP_ORIGIN` ni yangilang va redeploy qiling.
 
 Server AI route’lar `maxDuration = 60`; OpenAI chaqiriqlari 25 soniya timeout va maksimum bitta transient retry bilan bajariladi. Gemini chaqirig‘i ham 25 soniyada cheklanadi, avtomatik retry yo‘q. Hosting plan’ingizdagi runtime muddatini tekshiring. Audio 4 MB (multipart bilan taxminan 4.21 MB) dan kichik; Vercel 4.5 MB request limitiga sig‘adi. Server audio fayl saqlamaydi. HTTPS yoki localhost mikrofon/clipboard uchun shart.
@@ -235,3 +235,9 @@ Iboralarni o‘zgartirganda `src/data/phrases.json` va `public/offline/phrases.j
 - [Vercel functions limits](https://vercel.com/docs/functions/limitations)
 
 Dizayn: talabdagi ranglar va dashboard kompozitsiyasi, lokal Sankt-Peterburg SVG manzarasi. Reference rasm joriy suhbatga kelmagani sabab aynan rasmdagi piksel mosligi da’vo qilinmaydi.
+
+## Vercel’da ORIGIN / 403 xatosi
+
+Mutating API’lar `Origin` tekshiruviga ega. Vercel (`VERCEL=1`) runtime bergan aynan shu loyihaga tegishli production, branch va deployment hostlari HTTPS origin sifatida tan olinadi. Bu eski `APP_ORIGIN=http://localhost:3000` yoki boshqa alias qiymati qolganida ham loyiha manzilining ishlashini ta’minlaydi. `APP_ORIGIN` custom domain uchun qo‘shimcha aniq origin sifatida qoladi; atrofidagi bo‘sh joylar tozalanadi. `Host`/`X-Forwarded-Host` bilan ruxsat ro‘yxatini o‘zgartirib bo‘lmaydi. Missing Origin, `Sec-Fetch-Site: cross-site`, begona Vercel loyihalari, HTTP alias va malformed Origin rad qilinadi.
+
+Vercel Project Settings’da avtomatik system environment variables yoqilgan bo‘lsin. Ular o‘chiq bo‘lsa, to‘g‘ri `APP_ORIGIN`ni aniq kiriting. GitHub push’dan keyin **eng yangi commit asosidagi deployment Ready** bo‘lganini tekshiring; eski deployment’ni qayta ochish yangi kodni qo‘llamaydi. Yangilangan build `X-Dava-Origin-Policy: vercel-exact-v2` javob header’ini beradi. Bu header yo‘q bo‘lsa yoki boshqa bo‘lsa yangi build hali saytga qo‘llanmagan. Origin to‘g‘rilanganidan keyin boshqa kod (masalan `RATE_LIMIT_CONFIG`) chiqsa, uni alohida deployment/env muammosi sifatida tekshiring.
