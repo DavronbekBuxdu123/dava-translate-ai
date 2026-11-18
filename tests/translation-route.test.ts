@@ -42,6 +42,8 @@ it('returns a recent identical translation without invoking the provider', async
 it('saves new AI translation under the resolved guest with the correct direction', async () => {
   const res = await POST(request({ text: 'Assalomu alaykum!', sourceLang: 'uz' }));
   expect(res.status).toBe(200);
+  expect(res.headers.get('server-timing')).toContain('provider;dur=');
+  expect(res.headers.get('x-dava-ai-provider')).toBeTruthy();
   expect(provider).toHaveBeenCalledWith({
     text: 'Assalomu alaykum!',
     sourceLang: 'uz',

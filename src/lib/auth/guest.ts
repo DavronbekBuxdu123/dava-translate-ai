@@ -10,7 +10,8 @@ export function assertOwner(guestId: string, ownerId?: string) {
 export async function guest() {
   const store = await cookies();
   let token = store.get(guestCookie)?.value;
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) {
+  const hadValidCookie = !!token && /^[a-f0-9]{64}$/.test(token);
+  if (!hadValidCookie) {
     token = randomBytes(32).toString('hex');
     store.set(guestCookie, token, {
       httpOnly: true,
@@ -20,6 +21,10 @@ export async function guest() {
       maxAge: 60 * 60 * 24 * 365,
     });
   }
-  const tokenHash = createHash('sha256').update(token).digest('hex');
+  const tokenHash = createHash('sha256').update(token!).digest('hex');
+  if (hadValidCookie) {
+    const existing = await db().guestSession.findUnique({ where: { tokenHash } });
+    if (existing) return existing;
+  }
   return db().guestSession.upsert({ where: { tokenHash }, create: { tokenHash }, update: {} });
 }

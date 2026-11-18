@@ -3,10 +3,14 @@ import { route, success, AppError, readLimited } from '@/lib/server';
 import { context } from '@/lib/api-context';
 import { languageSchema } from '@/lib/validation';
 import { transcribe } from '@/lib/ai/transcription';
+import { transcriptionConfig } from '@/lib/ai/provider-config';
+import { aiResponse } from '@/lib/ai/timing';
 export const maxDuration = 60;
 export async function POST(request: NextRequest) {
   return route(async () => {
+    const started = performance.now();
     await context(request, true);
+    const sessionDone = performance.now();
     const length = Number(request.headers.get('content-length'));
     if (length > 4 * 1024 * 1024 + 12000)
       throw new AppError('AUDIO_SIZE', 'Audio hajmi 4 MB dan oshmasin.', 413);
@@ -32,6 +36,10 @@ export async function POST(request: NextRequest) {
       )
     )
       throw new AppError('AUDIO_TYPE', 'Bu audio formati qo‘llab-quvvatlanmaydi.', 415);
-    return success({ text: await transcribe(file, language) });
+    const text = await transcribe(file, language);
+    return aiResponse(success({ text }), transcriptionConfig().provider, {
+      session: sessionDone - started,
+      provider: performance.now() - sessionDone,
+    });
   });
 }

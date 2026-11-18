@@ -84,3 +84,19 @@ describe('request boundaries', () => {
     vi.unstubAllEnvs();
   });
 });
+
+it('uses a read for an established guest instead of rewriting it on every AI call', async () => {
+  const token = 'a'.repeat(64);
+  const set = vi.fn();
+  vi.mocked(cookies).mockResolvedValue({ get: () => ({ value: token }), set } as unknown as Awaited<
+    ReturnType<typeof cookies>
+  >);
+  const findUnique = vi.fn(async () => ({ id: 'existing-owner' })),
+    upsert = vi.fn();
+  vi.mocked(db).mockReturnValue({ guestSession: { findUnique, upsert } } as unknown as ReturnType<
+    typeof db
+  >);
+  await expect(guest()).resolves.toEqual({ id: 'existing-owner' });
+  expect(upsert).not.toHaveBeenCalled();
+  expect(set).not.toHaveBeenCalled();
+});

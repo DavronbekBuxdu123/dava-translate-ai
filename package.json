@@ -15,7 +15,8 @@
     "db:dev": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "ai:check": "node scripts/check-ai.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "latest",

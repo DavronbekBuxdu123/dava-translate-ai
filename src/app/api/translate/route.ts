@@ -7,21 +7,33 @@ import { translate } from '@/lib/ai/translation';
 import { db } from '@/lib/db';
 import { opposite } from '@/types';
 import { translationConfig } from '@/lib/ai/translation-config';
+import { aiResponse } from '@/lib/ai/timing';
 export const maxDuration = 60;
 export async function POST(request: NextRequest) {
   return route(async () => {
+    const started = performance.now();
+    const config = translationConfig();
     const input = await readJson(request, translationSchema);
     const owner = await context(request, true);
+    const sessionDone = performance.now();
     const requestKey = createHash('sha256')
-      .update(JSON.stringify({ ...input, ...translationConfig() }))
+      .update(JSON.stringify({ ...input, ...config }))
       .digest('hex');
     const existing = await db().translation.findFirst({
       where: { guestId: owner.id, requestKey, createdAt: { gte: new Date(Date.now() - 300000) } },
       include: { favorites: { select: { id: true } } },
       orderBy: { createdAt: 'desc' },
     });
-    if (existing) return success(existing);
+    const cacheDone = performance.now();
+    if (existing)
+      return aiResponse(
+        success(existing),
+        config.provider,
+        { session: sessionDone - started, lookup: cacheDone - sessionDone },
+        'hit',
+      );
     const translatedText = await translate(input);
+    const providerDone = performance.now();
     const data = await db().translation.create({
       data: {
         guestId: owner.id,
@@ -34,6 +46,11 @@ export async function POST(request: NextRequest) {
       },
       include: { favorites: { select: { id: true } } },
     });
-    return success(data);
+    return aiResponse(success(data), config.provider, {
+      session: sessionDone - started,
+      lookup: cacheDone - sessionDone,
+      provider: providerDone - cacheDone,
+      save: performance.now() - providerDone,
+    });
   });
 }
