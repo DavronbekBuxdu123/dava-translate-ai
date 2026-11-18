@@ -85,15 +85,20 @@ it('never uses a Russian voice for an Uzbek device fallback', async () => {
   expect(result.current.error).toContain('o‘zbekcha');
 });
 
-it('does not switch to browser voice when Windows reports offline', async () => {
+it('tries the actual server instead of trusting a possibly wrong Windows offline flag', async () => {
   Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+  fetchMock.mockResolvedValue(
+    new Response(new Blob(['wav']), {
+      headers: { 'Content-Type': 'audio/wav', 'X-Dava-Speech-Provider': 'gemini' },
+    }),
+  );
   const { result } = renderHook(() => useSpeech());
   await act(async () => {
     await result.current.play('Привет', 'ru');
   });
   expect(speak).not.toHaveBeenCalled();
-  expect(fetchMock).not.toHaveBeenCalled();
-  expect(result.current.error).toContain('internet');
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+  expect(result.current.source).toBe('ai');
 });
 
 it('replays identical audio without another provider request', async () => {

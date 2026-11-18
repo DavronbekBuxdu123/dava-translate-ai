@@ -44,10 +44,6 @@ export function useSpeech() {
     setSource(null);
     try {
       const useDevice = mode === 'device';
-      if (!useDevice && !navigator.onLine)
-        throw new Error(
-          'AI ovozi uchun internet kerak. Qurilma ovozini alohida tanlashingiz mumkin.',
-        );
       let voices =
         useDevice && typeof speechSynthesis !== 'undefined' ? speechSynthesis.getVoices() : [];
       if (useDevice && !voices.length && typeof speechSynthesis !== 'undefined') {
