@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { expect, it, vi } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import OpenAI from 'openai';
 const { create } = vi.hoisted(() => ({ create: vi.fn() }));
 vi.mock('@/lib/ai/client', () => ({
@@ -8,6 +8,7 @@ vi.mock('@/lib/ai/client', () => ({
 }));
 import { transcribe } from '@/lib/ai/transcription';
 it('retries an explicitly rejected language code once without forcing another language', async () => {
+  vi.stubEnv('TRANSCRIPTION_PROVIDER', 'openai');
   create
     .mockRejectedValueOnce(
       new OpenAI.APIError(
@@ -24,3 +25,5 @@ it('retries an explicitly rejected language code once without forcing another la
   expect(create.mock.calls[1][0]).not.toHaveProperty('language');
   expect(create).toHaveBeenCalledTimes(2);
 });
+
+afterEach(() => vi.unstubAllEnvs());

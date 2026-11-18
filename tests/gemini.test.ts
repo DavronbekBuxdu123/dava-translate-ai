@@ -77,6 +77,8 @@ it('reports timeouts and does not automatically spend on another provider', asyn
 });
 it('keeps OpenAI as the backward-compatible default and rejects invalid config', () => {
   vi.stubEnv('TRANSLATION_PROVIDER', '');
+  expect(translationConfig().provider).toBe('gemini');
+  vi.stubEnv('GEMINI_API_KEY', '');
   expect(translationConfig().provider).toBe('openai');
   vi.stubEnv('TRANSLATION_PROVIDER', 'unknown');
   expect(() => translationConfig()).toThrow();

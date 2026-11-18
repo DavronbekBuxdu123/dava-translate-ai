@@ -3,17 +3,10 @@ import { ai, providerCall } from './client';
 import { AppError } from '@/lib/server';
 import type { Language } from '@/types';
 import { geminiSpeech } from './gemini-speech';
+import { speechConfig } from './provider-config';
 export async function speech(text: string, language: Language) {
-  const provider =
-    process.env.SPEECH_PROVIDER?.trim() ||
-    (process.env.TRANSLATION_PROVIDER === 'gemini' ? 'gemini' : 'openai');
+  const { provider, model } = speechConfig();
   if (provider === 'gemini') return geminiSpeech(text, language);
-  if (provider !== 'openai')
-    throw new AppError(
-      'VOICE_CONFIG',
-      'SPEECH_PROVIDER qiymati gemini yoki openai bo‘lishi kerak.',
-      503,
-    );
   if (language === 'uz')
     throw new AppError(
       'VOICE_UNSUPPORTED',
@@ -23,7 +16,7 @@ export async function speech(text: string, language: Language) {
   return providerCall(async () => {
     const voice = process.env.OPENAI_TTS_VOICE || 'coral';
     const result = await ai().audio.speech.create({
-      model: process.env.OPENAI_TTS_MODEL || 'gpt-4o-mini-tts',
+      model,
       voice,
       input: text,
       response_format: 'mp3',

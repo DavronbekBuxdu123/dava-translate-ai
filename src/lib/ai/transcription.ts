@@ -2,12 +2,16 @@ import 'server-only';
 import { ai, providerCall } from './client';
 import type { Language } from '@/types';
 import OpenAI from 'openai';
+import { transcriptionConfig } from './provider-config';
+import { geminiTranscribe } from './gemini-transcription';
 export async function transcribe(file: File, language: Language) {
+  const { provider, model } = transcriptionConfig();
+  if (provider === 'gemini') return geminiTranscribe(file, language, model);
   return providerCall(async () => {
     const client = ai();
     const options = {
       file,
-      model: process.env.OPENAI_TRANSCRIPTION_MODEL || 'gpt-4o-mini-transcribe',
+      model,
       prompt:
         language === 'uz'
           ? 'O‘zbek tilidagi nutq. Lotin yozuvidan foydalaning.'
