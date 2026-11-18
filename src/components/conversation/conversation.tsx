@@ -397,9 +397,9 @@ export function ConversationView() {
         </div>
       </section>
       <p className="privacy-note">
-        Bu navbatli push-to-talk suhbat: yozuv tugagach tarjima qilinadi. Audio OpenAI’ga
-        yuboriladi, DAVA uni doimiy saqlamaydi. Talaffuz sintezlangan ovoz. Avtomatik tarjima va
-        ijroni sozlamalardan boshqaring.
+        Bu navbatli push-to-talk suhbat: yozuv tugagach tarjima qilinadi. Audio tanlangan Gemini
+        yoki OpenAI xizmatiga yuboriladi, DAVA uni doimiy saqlamaydi. Talaffuz sintezlangan ovoz.
+        Avtomatik tarjima va ijroni sozlamalardan boshqaring.
       </p>
     </>
   );

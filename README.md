@@ -34,7 +34,7 @@ GEMINI_TRANSLATION_MODEL=gemini-3.5-flash-lite
 
 Neon `DATABASE_URL` va `DIRECT_URL` qiymatlarini saqlang. `npm run db:migrate` oldin bajarilgan bo‘lishi kerak. So‘ng serverni to‘xtatib, `npm run dev` bilan qayta yoqing. Gemini matn tarjimasi tezkor tarjimon va suhbatdagi matn xabarlarida ishlaydi. Kalit faqat Google API’ga serverdagi HTTP header orqali yuboriladi, brauzerga berilmaydi. Javob JSON schema va Zod bilan tekshiriladi. 25 soniya timeout; boshqa provayderga avtomatik pullik fallback yo‘q.
 
-**Mikrofon transkripsiyasi hozircha OpenAI’da qoladi.** AI talaffuzi Gemini orqali ham ishlaydi (quyidagi sozlamalar). OpenAI balansisiz matn yozib tarjima qiling va Gemini ovozida eshittiring. Gemini bepul kvotasi hisob, region va modelga bog‘liq; mavjud kvotani [AI Studio](https://aistudio.google.com/) orqali tekshiring. `429` kvota tugashi yoki so‘rovlar tezligi limitini bildirishi mumkin.
+**Tarjima, mikrofon transkripsiyasi va AI talaffuzi Gemini orqali ishlay oladi.** Uchalasida Gemini tanlangan bo‘lsa OpenAI kaliti yoki balansi kerak emas. Gemini bepul kvotasi hisob, region va modelga bog‘liq; mavjud kvotani [AI Studio](https://aistudio.google.com/) orqali tekshiring. `429` kvota tugashi yoki so‘rovlar tezligi limitini bildirishi mumkin.
 
 Avval `.env`ga `GEMINI_TRANSLATION_MODEL=gemini-2.5-flash` yozgan bo‘lsangiz, uni `gemini-3.5-flash-lite`ga yangilang. Google hujjatlarida 2.5 Flash deprecated deb ko‘rsatilgan; yangi default amaldagi Flash-Lite modelidir. [Model](https://aistudio.google.com/docs/models/gemini-3.5-flash-lite) va [kvota/narxlar](https://aistudio.google.com/docs/pricing#gemini-3.5-flash-lite) hisobingiz uchun tekshiriladi.
 
@@ -48,7 +48,7 @@ npm run dev
 
 Bu Gemini yangilanishida yangi paket yoki schema migration yo‘q; `npm ci` majburiy emas, lekin lock faylga mos muhitni qayta tiklaydi. Git lokal `.env`ni almashtirmaydi. `.env.example`ni yana `.env`ga ko‘chirib, o‘z kalitlaringizni ustidan yozmang. Lokal kod o‘zgarishlari sabab pull rad qilinsa, ularni o‘chirib yubormasdan avval ko‘rib chiqing.
 
-`TRANSLATION_PROVIDER=openai` eski tarjima provayderini tanlaydi; o‘zgaruvchi umuman yo‘q bo‘lsa ham eski OpenAI yo‘li saqlanadi. Provider yoki model almashtirilganda tarjima keshi alohida yuritiladi. Barcha AI endpointlar production’da Upstash bilan himoyalanishi shart, Gemini bepul kvota ishlatsa ham.
+`TRANSLATION_PROVIDER=openai` eski tarjima provayderini tanlaydi; provider o‘zgaruvchisi yozilmagan bo‘lsa va `GEMINI_API_KEY` mavjud bo‘lsa Gemini tanlanadi. Gemini kaliti yo‘q bo‘lsagina eski OpenAI yo‘li ishlatiladi. Aniq `openai` yozilgan sozlama avtomatik almashtirilmaydi. Provider yoki model almashtirilganda tarjima keshi alohida yuritiladi. Barcha AI endpointlar production’da Upstash bilan himoyalanishi shart, Gemini bepul kvota ishlatsa ham.
 
 ## Tabiiy AI ovozi — Gemini TTS
 
@@ -64,11 +64,37 @@ GEMINI_TTS_VOICE=Kore
 
 `SPEECH_PROVIDER` yozilmagan eski Gemini o‘rnatmalarida ham `TRANSLATION_PROVIDER=gemini` bo‘lsa Gemini ovozi tanlanadi. `GEMINI_TTS_VOICE` uchun masalan `Kore`, `Puck`, `Aoede` kabi [hujjatdagi tayyor ovozlar](https://aistudio.google.com/docs/speech-generation#voice-options) ishlatiladi. Ruscha va Northern Uzbek rasmiy supported languages ro‘yxatida bor.
 
-Onlayn ijro **avval server AI ovozidan** foydalanadi. `AI ovozi` yozuvi ijro manbasini ko‘rsatadi. Xatoda brauzer ovoziga yashirin o‘tmaydi: `Qurilma ovozida eshitish` tugmasini foydalanuvchi o‘zi bosadi. Oflayn holatda qurilmaning aynan mos tildagi ovozi qo‘llanadi va `Qurilma ovozi` deb ko‘rsatiladi; o‘zbekcha ovoz yo‘q bo‘lsa boshqa tilga almashtirilmaydi.
+Onlayn ijro **avval server AI ovozidan** foydalanadi. `AI ovozi` yozuvi ijro manbasini ko‘rsatadi. Xatoda brauzer ovoziga yashirin o‘tmaydi: `Qurilma ovozida eshitish` tugmasini foydalanuvchi o‘zi bosadi. Oflayn holatda ham asosiy ilova qurilma ovoziga avtomatik o‘tmaydi; uni foydalanuvchi alohida tanlaydi. Shunda aynan mos til ishlatiladi va `Qurilma ovozi` deb ko‘rsatiladi; o‘zbekcha ovoz yo‘q bo‘lsa boshqa tilga almashtirilmaydi.
 
-Bir so‘rovda **1000 belgigacha** matn eshittiriladi (matn tarjimasi limiti 5000 bo‘lib qoladi). Audio 4 MiB va provider JSON javobi ham cheklangan, 40 soniya timeout, avtomatik qayta urinish yoki boshqa pullik provayderga fallback yo‘q. Gemini 3.8 standart WAV qaytaradi; kod uni qayta header bilan o‘ramaydi. API audio va matnni doimiy keshlamaydi yoki saqlamaydi. Production’da Upstash talabi saqlanadi.
+Bir so‘rovda **1000 belgigacha** matn eshittiriladi (matn tarjimasi limiti 5000 bo‘lib qoladi). Audio 4 MiB va provider JSON javobi ham cheklangan, 40 soniya timeout, avtomatik qayta urinish yoki boshqa pullik provayderga fallback yo‘q. Gemini 3.8 standart WAV qaytaradi; kod uni qayta header bilan o‘ramaydi. API audio faylni doimiy keshlamaydi yoki saqlamaydi. Takroriy ijro uchun tab xotirasida 2 daqiqagacha, maksimum 3 audio va jami 8 MiB bilan cheklangan kesh bor; disk, localStorage yoki service worker’ga yozilmaydi. Production’da Upstash talabi saqlanadi.
 
-Ovoz ulanib qolsa ham **mikrofon /api/transcribe hali OpenAI balansini talab qiladi**. Ushbu o‘zgarish mikrofon provayderini almashtirmaydi. Kalit bu Cloud workspace’da yo‘qligi sabab jonli ovoz sifati tekshirilmagan; testlarda faqat test execution uchun WAV/HTTP mock ishlatiladi.
+Mikrofon ham Gemini orqali ishlashi uchun `TRANSCRIPTION_PROVIDER=gemini` va `GEMINI_TRANSCRIPTION_MODEL=gemini-3.5-flash-lite` qo‘ying. Audio (4 MB gacha) inline base64 tarzida Google’ga yuboriladi, yuklangan doimiy fayl yaratilmaydi. Transkript asl tilda, Uzbek uchun lotin yozuvida qaytariladi. Kalit bu Cloud workspace’da yo‘qligi sabab jonli ovoz sifati tekshirilmagan; testlarda faqat test execution uchun WAV/HTTP mock ishlatiladi.
+
+## Qaysi AI ishlayotganini aniq tekshirish
+
+Git’dan yangilagach dev serverni Ctrl+C bilan to‘xtatib, `npm run dev` bilan qayta yoqing va brauzerni Ctrl+Shift+R orqali yangilang. Next.js’da `.env.local` `.env`dan ustun turishi mumkin; eski `*_PROVIDER=openai` qiymatlari o‘sha faylda qolmaganini tekshiring. Lokal `.env`ni chatga yoki Git’ga yubormang.
+
+Server ishlab turgan paytda ikkinchi terminalda:
+
+```bash
+npm run ai:check
+```
+
+Bu buyruq **ishlayotgan Next.js serverining** konfiguratsiyasini o‘qiydi: kod reviziyasi, har uch funksiyadagi provider/model va kalit BOR/YO‘Q. Kalit qiymati va baza URL’i ko‘rsatilmaydi. Faqat konfiguratsiya borligi xizmat ishlayotganini anglatmaydi.
+
+Haqiqiy kalit, kvota va bazani uchta so‘rov bilan tekshirish:
+
+```bash
+npm run ai:check -- --live
+```
+
+Bu rejim bitta sinov matnini tarjima qiladi (tarixga saqlanadi), o‘zbekcha audio yaratadi va aynan o‘sha audioni qayta transkripsiya qiladi. **Kvota sarflanadi.** Har bosqich uchun OK yoki aniq xato kodi, haqiqiy provider va vaqt chiqadi. TTS ishlamasa transkripsiya testi «o‘tkazilmadi» deb ko‘rsatiladi, ishladi deb belgilanmaydi. Sinov audiosi diskka yozilmaydi. U insonning haqiqiy mikrofonini yoki talaffuz sifatini sinovdan o‘tkazish o‘rnini bosmaydi.
+
+`Server-Timing` tarjimada `session` (limiter + guest/DB), `lookup`, `provider` va `save` vaqtlarini alohida beradi. Neon cold start yoki provider kechikishini shu orqali ajrating. Mavjud guest uchun har safar upsert yozuvi o‘rniga oddiy read ishlatiladi. Birinchi so‘rov bir zumda bo‘lishi kafolatlanmaydi; takroriy ovozlar tab xotirasidagi keshdan ijro etiladi.
+
+Diagnostika endpointi faqat `npm run dev` rejimida mavjud, production’da 404 beradi. Custom lokal port uchun `DAVA_CHECK_URL`ni localhost manziliga sozlash mumkin. `gemini-audit-2` kodi chiqmasa yangi kod ishlamayapti yoki boshqa portdagi eski serverga ulanyapsiz.
+
+Alohida `/offline/index.html` sahifasi **faqat qurilma ovozi** ishlatadi. AI ovozini asosiy `/phrases`, `/translate` yoki `/conversation` sahifalarida tekshiring. Ovoz manbasi asosiy interfeysda ijro tugagandan keyin ham saqlanadi. Offline public cache versiyasi yangilangan; shaxsiy API javoblari hali ham keshlanmaydi.
 
 ## Tayyor funksiyalar
 
@@ -87,12 +113,14 @@ Ovoz ulanib qolsa ham **mikrofon /api/transcribe hali OpenAI balansini talab qil
 | ---------------------------- | --------------------------------------------------------------------------------- |
 | `DATABASE_URL`               | Neon pooled runtime connection string, `sslmode=require` bilan                    |
 | `DIRECT_URL`                 | Neon direct connection, migrations uchun. Bo‘sh bo‘lsa `DATABASE_URL` ishlatiladi |
-| `TRANSLATION_PROVIDER`       | `gemini` yoki `openai`; o‘zgaruvchi yo‘q bo‘lsa `openai`                          |
+| `TRANSLATION_PROVIDER`       | `gemini` yoki `openai`; Gemini kaliti bor bo‘lsa `gemini`, aks holda `openai`     |
 | `SPEECH_PROVIDER`            | `gemini` yoki `openai`; eski Gemini o‘rnatmalari avtomatik Gemini TTS tanlaydi    |
 | `GEMINI_TTS_MODEL`           | Default `gemini-3.8-flash-lite-tts`                                               |
 | `GEMINI_TTS_VOICE`           | Default `Kore`                                                                    |
 | `GEMINI_API_KEY`             | Google AI Studio server kaliti, Gemini tarjima uchun                              |
 | `GEMINI_TRANSLATION_MODEL`   | Default `gemini-3.5-flash-lite`                                                   |
+| `TRANSCRIPTION_PROVIDER`     | `gemini` yoki `openai`; yozilmasa tarjima provideriga mos tanlanadi               |
+| `GEMINI_TRANSCRIPTION_MODEL` | Default `gemini-3.5-flash-lite`                                                   |
 | `OPENAI_API_KEY`             | Faqat serverda ishlatiladigan OpenAI API kaliti                                   |
 | `OPENAI_TRANSLATION_MODEL`   | Default `gpt-4.1-mini`, structured output qo‘llashi kerak                         |
 | `OPENAI_TRANSCRIPTION_MODEL` | Default `gpt-4o-mini-transcribe`                                                  |
@@ -140,7 +168,7 @@ Server AI route’lar `maxDuration = 60`; OpenAI chaqiriqlari 25 soniya timeout 
 - Barcha tarix/sevimli/suhbat amallari guest ownership bilan cheklangan. Begona ID uchun 404.
 - Mutating API same-origin tekshiruvi; JSON va audio hajm/type validatsiyasi. Xatolarda credential yoki provayder ichki exception’i chiqmaydi. AI matni HTML sifatida render qilinmaydi.
 - Cookie o‘chirilsa eski tarixga qayta bog‘lanib bo‘lmaydi. Bu authsiz MVP; keyingi akkaunt migratsiyasi uchun `GuestSession` alohida model sifatida ajratilgan.
-- Tarjima matni tanlangan Gemini yoki OpenAI provayderiga yuboriladi; audio transkripsiya OpenAI orqali, server TTS esa tanlangan Gemini yoki OpenAI orqali bajariladi. Gemini uchun [Google API terms](https://ai.google.dev/gemini-api/terms) amal qiladi, bepul va pullik xizmatdagi ma’lumotlardan foydalanish shartlari farq qiladi. DAVA raw audio’ni doimiy saqlamaydi; provayderning [data controls](https://platform.openai.com/docs/guides/your-data) va [privacy](https://openai.com/policies/privacy-policy/) siyosati amal qiladi.
+- Tarjima matni tanlangan Gemini yoki OpenAI provayderiga yuboriladi; audio transkripsiya va server TTS ham alohida tanlangan Gemini yoki OpenAI orqali bajariladi. Gemini uchun [Google API terms](https://ai.google.dev/gemini-api/terms) amal qiladi, bepul va pullik xizmatdagi ma’lumotlardan foydalanish shartlari farq qiladi. DAVA raw audio’ni doimiy saqlamaydi; provayderning [data controls](https://platform.openai.com/docs/guides/your-data) va [privacy](https://openai.com/policies/privacy-policy/) siyosati amal qiladi.
 - OpenAI va Upstash billing limitlarini servislarning o‘zida ham o‘rnating. Loglarga matn, audio, connection string yoki API kalit yozmang.
 
 ## Testlar

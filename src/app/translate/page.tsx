@@ -12,8 +12,9 @@ export default function Page() {
       </div>
       <Translator />
       <p className="privacy-note">
-        Mikrofon faqat siz bosganingizda ishga tushadi. Audio transkripsiya uchun OpenAI’ga
-        yuboriladi va DAVA serverida saqlanmaydi. Talaffuz sun’iy ovoz yordamida yaratiladi.
+        Mikrofon faqat siz bosganingizda ishga tushadi. Audio transkripsiya uchun tanlangan Gemini
+        yoki OpenAI xizmatiga yuboriladi va DAVA serverida saqlanmaydi. Talaffuz sun’iy ovoz
+        yordamida yaratiladi.
       </p>
     </div>
   );

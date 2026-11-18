@@ -61,7 +61,9 @@ export function SettingsView() {
         </section>
         <section className="panel settings-panel">
           <h2>Ovoz va suhbat</h2>
-          <p className="muted">Ovoz sintezlangan; mavjudligi qurilmaga bog‘liq.</p>
+          <p className="muted">
+            AI ovozi serverda yaratiladi; qurilma ovozi alohida zaxira sifatida tanlanadi.
+          </p>
           <label className="setting-row">
             <span>
               <strong>Tarjimani avtomatik eshittirish</strong>
@@ -118,9 +120,9 @@ export function SettingsView() {
           </p>
           <p>
             Tarjima matni tanlangan Gemini yoki OpenAI xizmatiga yuboriladi. Audio transkripsiyasi
-            OpenAI orqali bajariladi. AI talaffuzi uchun matn tanlangan Gemini yoki OpenAI ovoz
-            xizmatiga yuboriladi. DAVA audio yozuvlarni doimiy saqlamaydi. Provayder ma’lumotlarni
-            o‘z siyosatiga binoan qayta ishlaydi.
+            tanlangan Gemini yoki OpenAI orqali bajariladi. AI talaffuzi uchun matn tanlangan Gemini
+            yoki OpenAI ovoz xizmatiga yuboriladi. DAVA audio yozuvlarni doimiy saqlamaydi.
+            Provayder ma’lumotlarni o‘z siyosatiga binoan qayta ishlaydi.
           </p>
           <p>
             Oflayn keshda faqat ommaviy iboralar va ilova qobig‘i saqlanadi; shaxsiy API javoblari
