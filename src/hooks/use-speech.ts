@@ -2,10 +2,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Language } from '@/types';
 import { usePreferences } from './use-preferences';
+import { loadSpeech } from '@/lib/speech-cache';
 export function useSpeech() {
   const [state, setState] = useState<'idle' | 'loading' | 'playing' | 'paused'>('idle');
   const [error, setError] = useState('');
   const [source, setSource] = useState<'ai' | 'device' | null>(null);
+  const [provider, setProvider] = useState('');
   const [preferences] = usePreferences();
   const audio = useRef<HTMLAudioElement | null>(null);
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
@@ -41,7 +43,11 @@ export function useSpeech() {
     setState('loading');
     setSource(null);
     try {
-      const useDevice = mode === 'device' || !navigator.onLine;
+      const useDevice = mode === 'device';
+      if (!useDevice && !navigator.onLine)
+        throw new Error(
+          'AI ovozi uchun internet kerak. Qurilma ovozini alohida tanlashingiz mumkin.',
+        );
       let voices =
         useDevice && typeof speechSynthesis !== 'undefined' ? speechSynthesis.getVoices() : [];
       if (useDevice && !voices.length && typeof speechSynthesis !== 'undefined') {
@@ -85,17 +91,12 @@ export function useSpeech() {
       if (text.length > 1000) throw new Error('AI ovozi uchun 1000 belgigacha matn tanlang.');
       const controller = new AbortController();
       request.current = controller;
-      const response = await fetch('/api/speech', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, language }),
-        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]),
-      });
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error?.message || 'Ovoz yaratilmadi.');
-      }
-      const blob = await response.blob();
+      const { blob, provider: actualProvider } = await loadSpeech(
+        text,
+        language,
+        AbortSignal.any([controller.signal, AbortSignal.timeout(60000)]),
+      );
+      setProvider(actualProvider);
       if (current !== generation.current) return;
       url.current = URL.createObjectURL(blob);
       const player = new Audio(url.current);
@@ -134,6 +135,7 @@ export function useSpeech() {
     state,
     error,
     source,
+    provider,
     play,
     playDevice: (text: string, language: Language) => play(text, language, 'device'),
     stop,

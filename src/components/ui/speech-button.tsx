@@ -40,9 +40,11 @@ export function SpeechButton({ text, language }: { text: string; language: Langu
           <Square />
         </Button>
       )}
-      {speech.state !== 'idle' && speech.state !== 'loading' && (
+      {speech.source && !speech.error && speech.state !== 'loading' && (
         <small className="speech-source">
-          {speech.source === 'ai' ? 'AI ovozi' : 'Qurilma ovozi'}
+          {speech.source === 'ai'
+            ? `${speech.provider ? speech.provider + ' ' : ''}AI ovozi`
+            : 'Qurilma ovozi'}
         </small>
       )}
       {speech.error && (

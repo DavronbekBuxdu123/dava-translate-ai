@@ -77,7 +77,7 @@ function render() {
     favorite.setAttribute('aria-pressed', String(favorites.includes(p.id)));
     actions.append(
       favorite,
-      button('♫ Eshitish', 'Ruscha talaffuzni eshitish', () => {
+      button('♫ Qurilma ovozi', 'Qurilma ovozida ruscha eshitish', () => {
         if (!('speechSynthesis' in window)) {
           status.textContent = 'Brauzer ovoz sintezini qo‘llamaydi.';
           return;

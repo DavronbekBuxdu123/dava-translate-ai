@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { useSpeech } from '@/hooks/use-speech';
+import { clearSpeechCache } from '@/lib/speech-cache';
 const fetchMock = vi.fn(),
   speak = vi.fn(),
   play = vi.fn(async () => {});
@@ -12,6 +13,7 @@ class TestAudio {
   pause = vi.fn();
 }
 beforeEach(() => {
+  clearSpeechCache();
   fetchMock.mockReset();
   play.mockClear();
   speak.mockClear();
@@ -43,7 +45,11 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllGlobals());
 it('uses server AI even when a device voice exists', async () => {
-  fetchMock.mockResolvedValue(new Response(new Blob(['wav'], { type: 'audio/wav' })));
+  fetchMock.mockResolvedValue(
+    new Response(new Blob(['wav'], { type: 'audio/wav' }), {
+      headers: { 'Content-Type': 'audio/wav', 'X-Dava-Speech-Provider': 'gemini' },
+    }),
+  );
   const { result } = renderHook(() => useSpeech());
   await act(async () => {
     await result.current.play('Привет', 'ru');
@@ -77,4 +83,32 @@ it('never uses a Russian voice for an Uzbek device fallback', async () => {
   expect(speak).not.toHaveBeenCalled();
   expect(fetchMock).not.toHaveBeenCalled();
   expect(result.current.error).toContain('o‘zbekcha');
+});
+
+it('does not switch to browser voice when Windows reports offline', async () => {
+  Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+  const { result } = renderHook(() => useSpeech());
+  await act(async () => {
+    await result.current.play('Привет', 'ru');
+  });
+  expect(speak).not.toHaveBeenCalled();
+  expect(fetchMock).not.toHaveBeenCalled();
+  expect(result.current.error).toContain('internet');
+});
+
+it('replays identical audio without another provider request', async () => {
+  fetchMock.mockResolvedValue(
+    new Response(new Blob(['wav']), {
+      headers: { 'Content-Type': 'audio/wav', 'X-Dava-Speech-Provider': 'gemini' },
+    }),
+  );
+  const { result } = renderHook(() => useSpeech());
+  await act(async () => {
+    await result.current.play('Привет', 'ru');
+  });
+  await act(async () => {
+    await result.current.play('Привет', 'ru');
+  });
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+  expect(result.current.provider).toBe('Gemini');
 });
