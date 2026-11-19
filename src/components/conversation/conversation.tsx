@@ -40,12 +40,19 @@ export function ConversationView() {
   const [page, setPage] = useState(1);
   const bottom = useRef<HTMLDivElement>(null);
   const pending = useRef(false);
+  const mounted = useRef(true);
   const speech = useSpeech();
   const history = useQuery({
     queryKey: ['conversations', page],
     queryFn: () => api<{ items: Conversation[]; total: number }>(`/api/conversations?page=${page}`),
     enabled: showHistory,
   });
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
   useEffect(() => {
     bottom.current?.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -56,13 +63,14 @@ export function ConversationView() {
   }, [messages]);
   async function createSession() {
     const created = await api<Conversation>('/api/conversations', { method: 'POST' });
+    if (!mounted.current) return created;
     setSession(created);
     setMessages([]);
     void queryClient.invalidateQueries({ queryKey: ['conversations'] });
     return created;
   }
   async function send(text: string, language: Language) {
-    if (!text.trim() || pending.current) return;
+    if (!mounted.current || !text.trim() || pending.current) return;
     pending.current = true;
     setOperation('translation');
     setBusy(true);
@@ -82,22 +90,24 @@ export function ConversationView() {
           '/api/conversations/messages',
           request,
         );
+        if (!mounted.current) return;
         setSession(first.conversation);
         result = first.message;
         void queryClient.invalidateQueries({ queryKey: ['conversations'] });
       }
+      if (!mounted.current) return;
       setMessages((prev) => [...prev, result]);
       setDraft('');
       if (preferences.autoplay) void speech.play(result.translatedText, result.targetLang);
     } catch (e) {
-      setError((e as Error).message);
+      if (mounted.current) setError((e as Error).message);
     } finally {
       pending.current = false;
-      setBusy(false);
+      if (mounted.current) setBusy(false);
     }
   }
   async function sendAudio(audio: Blob, language: Language) {
-    if (pending.current) return;
+    if (!mounted.current || pending.current) return;
     pending.current = true;
     setOperation('voice');
     setBusy(true);
@@ -118,6 +128,7 @@ export function ConversationView() {
         '/api/conversations/voice',
         { method: 'POST', body: form },
       );
+      if (!mounted.current) return;
       setSession(result.conversation);
       setMessages((prev) => [...prev, result.message]);
       setDraft('');
@@ -127,11 +138,12 @@ export function ConversationView() {
         void speech.play(result.message.translatedText, result.message.targetLang);
     } finally {
       pending.current = false;
-      setBusy(false);
+      if (mounted.current) setBusy(false);
     }
   }
   const recorder = useRecorder(
     async (text, language) => {
+      if (!mounted.current) return;
       setDraft(text);
       setSourceLang(language);
       if (preferences.autoTranslate) await send(text, language);
@@ -139,7 +151,7 @@ export function ConversationView() {
     preferences.autoTranslate ? { onAudio: sendAudio } : undefined,
   );
   async function action(work: () => Promise<void>) {
-    if (pending.current) return;
+    if (!mounted.current || pending.current) return;
     pending.current = true;
     setOperation('session');
     setBusy(true);
@@ -147,12 +159,13 @@ export function ConversationView() {
     speech.stop();
     try {
       await work();
+      if (!mounted.current) return;
       void queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (e) {
-      setError((e as Error).message);
+      if (mounted.current) setError((e as Error).message);
     } finally {
       pending.current = false;
-      setBusy(false);
+      if (mounted.current) setBusy(false);
     }
   }
   const locked = busy || recorder.busy;
@@ -173,7 +186,7 @@ export function ConversationView() {
             onClick={() =>
               void action(async () => {
                 await createSession();
-                setDraft('');
+                if (mounted.current) setDraft('');
               })
             }
           >
@@ -200,6 +213,7 @@ export function ConversationView() {
                       onClick={() =>
                         void action(async () => {
                           const data = await api<Conversation>(`/api/conversations/${item.id}`);
+                          if (!mounted.current) return;
                           setSession(data);
                           setMessages(data.messages || []);
                           setDraft('');
@@ -223,6 +237,7 @@ export function ConversationView() {
                       onConfirm={() =>
                         void action(async () => {
                           await api(`/api/conversations/${item.id}`, { method: 'DELETE' });
+                          if (!mounted.current) return;
                           if (session?.id === item.id) {
                             setSession(null);
                             setMessages([]);
@@ -278,7 +293,7 @@ export function ConversationView() {
                     await api(`/api/conversations/${session.id}?messagesOnly=true`, {
                       method: 'DELETE',
                     });
-                    setMessages([]);
+                    if (mounted.current) setMessages([]);
                   })
                 }
               >
@@ -300,7 +315,7 @@ export function ConversationView() {
                       method: 'PATCH',
                       body: JSON.stringify({ action: 'end' }),
                     });
-                    setSession(ended);
+                    if (mounted.current) setSession(ended);
                   })
                 }
               >

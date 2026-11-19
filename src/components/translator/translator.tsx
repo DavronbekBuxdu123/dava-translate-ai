@@ -84,6 +84,7 @@ export function Translator() {
       );
       return;
     }
+    speech.stop();
     if (prepared) {
       setDisplayResult(prepared);
       setTranslation(null);
@@ -99,7 +100,6 @@ export function Translator() {
     const current = ++requestId.current.value;
     setError('');
     setBusy(true);
-    speech.stop();
     try {
       const result = await api<Translation>('/api/translate', {
         method: 'POST',

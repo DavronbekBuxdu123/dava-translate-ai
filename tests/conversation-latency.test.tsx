@@ -178,3 +178,46 @@ it('posts recorded audio once through the combined voice route when automatic tr
   });
   expect((mocks.api.mock.calls[1][1].body as FormData).get('conversationId')).toBe('session-first');
 });
+
+it('does not autoplay a late voice response after the conversation page is unmounted', async () => {
+  let complete: ((result: unknown) => void) | undefined;
+  mocks.api.mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        complete = resolve;
+      }),
+  );
+  const view = renderConversation();
+  const onAudio = mocks.onAudio!;
+  let submitted: Promise<void>;
+  act(() => {
+    submitted = onAudio(new Blob(['recorded audio'], { type: 'audio/webm' }), 'uz');
+  });
+  expect(mocks.api).toHaveBeenCalledWith('/api/conversations/voice', expect.anything());
+  view.unmount();
+  await act(async () => {
+    complete!({ conversation, message });
+    await submitted!;
+  });
+  expect(mocks.speechPlay).not.toHaveBeenCalled();
+});
+
+it('does not autoplay a late typed response after navigating away', async () => {
+  let complete: ((result: unknown) => void) | undefined;
+  mocks.api.mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        complete = resolve;
+      }),
+  );
+  const view = renderConversation();
+  fireEvent.change(screen.getByRole('textbox', { name: 'Suhbat xabari' }), {
+    target: { value: 'Salom' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Xabarni tarjima qilib yuborish' }));
+  view.unmount();
+  await act(async () => {
+    complete!({ conversation, message });
+  });
+  expect(mocks.speechPlay).not.toHaveBeenCalled();
+});
