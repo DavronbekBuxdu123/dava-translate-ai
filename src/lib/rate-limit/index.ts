@@ -31,11 +31,24 @@ export async function throttle(request: NextRequest, identity: string, paid = fa
       prefix: 'dava:minute',
       timeout: 3000,
     });
-    for (const key of keys) {
-      const result = await shared.limit(key);
-      if (!result.success || result.reason === 'timeout')
-        throw new AppError('RATE_LIMIT', 'So‘rovlar ko‘payib ketdi. Bir daqiqa kuting.', 429);
-    }
+    // The independent session/IP checks can share one network-wait phase.
+    // Keep the daily budget after both approvals: minute-blocked requests must
+    // not drain the global AI allowance without ever reaching a provider.
+    const minuteResults = await Promise.allSettled(keys.map((key) => shared!.limit(key)));
+    if (minuteResults.some((result) => result.status === 'rejected'))
+      throw new AppError(
+        'RATE_LIMIT_UNAVAILABLE',
+        'So‘rovlar himoyasi vaqtincha mavjud emas. Keyinroq urinib ko‘ring.',
+        503,
+      );
+    if (
+      minuteResults.some(
+        (result) =>
+          result.status === 'fulfilled' &&
+          (!result.value.success || result.value.reason === 'timeout'),
+      )
+    )
+      throw new AppError('RATE_LIMIT', 'So‘rovlar ko‘payib ketdi. Bir daqiqa kuting.', 429);
     if (paid) {
       const configuredLimit = Number(process.env.AI_DAILY_LIMIT || 500);
       const limit =
@@ -46,7 +59,13 @@ export async function throttle(request: NextRequest, identity: string, paid = fa
         prefix: 'dava:budget',
         timeout: 3000,
       });
-      const result = await daily.limit('all-guests');
+      const result = await daily.limit('all-guests').catch(() => {
+        throw new AppError(
+          'RATE_LIMIT_UNAVAILABLE',
+          'So‘rovlar himoyasi vaqtincha mavjud emas. Keyinroq urinib ko‘ring.',
+          503,
+        );
+      });
       if (!result.success || result.reason === 'timeout')
         throw new AppError('DAILY_LIMIT', 'Bugungi AI limiti tugadi. Keyinroq qayting.', 429);
     }
