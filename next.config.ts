@@ -9,6 +9,7 @@ const config: NextConfig = {
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Dava-Origin-Policy', value: 'vercel-exact-v2' },
+          { key: 'X-Dava-Performance', value: 'combined-voice-v1' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(self)' },

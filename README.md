@@ -96,6 +96,12 @@ Diagnostika endpointi faqat `npm run dev` rejimida mavjud, production’da 404 b
 
 Alohida `/offline/index.html` sahifasi **faqat qurilma ovozi** ishlatadi. AI ovozini asosiy `/phrases`, `/translate` yoki `/conversation` sahifalarida tekshiring. Ovoz manbasi asosiy interfeysda ijro tugagandan keyin ham saqlanadi. Offline public cache versiyasi yangilangan; shaxsiy API javoblari hali ham keshlanmaydi.
 
+## Tezkor ishlash
+
+[O‘lchovlar va tezlashtirish tafsilotlari](docs/PERFORMANCE.md): avtomatik ovozli suhbat mos Gemini modelida STT va tarjimani bitta AI so‘rovida bajaradi; birinchi suhbat uchun ortiqcha HTTP so‘rovi yo‘q; mavjud tayyor iboralar «Tayyor ibora» belgisi bilan serverni kutmasdan ko‘rinadi. Noma’lum gaplar uchun AI kutishi saqlanadi, vaqt kafolatlanmaydi.
+
+Mos standart sozlama: `TRANSLATION_PROVIDER=gemini`, `TRANSCRIPTION_PROVIDER=gemini`, ikkala model ham `gemini-3.5-flash-lite`. Bular avvalgi default bilan bir xil. Qo‘lda model/provider tanlangan bo‘lsa tanlov yashirincha almashtirilmaydi. Yangi kalit yoki migration kerak emas.
+
 ## Tayyor funksiyalar
 
 - Kontekstni saqlovchi server AI tarjimasi: UZ/RU, kundalik/rasmiy uslub, Zod structured output, Ctrl+Enter, ikki taraflama swap, copy/paste, 5000 belgi limiti, 5 daqiqalik aynan bir xil so‘rov keshi.
