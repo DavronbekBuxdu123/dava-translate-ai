@@ -7,6 +7,7 @@ import { translationConfig } from './translation-config';
 import { translationPrompt } from './translation-prompt';
 import { transcribe } from './transcription';
 import { translate } from './translation';
+import { quickThinking } from './gemini-generation';
 
 const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
 const MAX_RESPONSE_BYTES = 256 * 1024;
@@ -112,6 +113,7 @@ export async function voiceTranslation(
               properties: { text: { type: 'STRING' }, translatedText: { type: 'STRING' } },
               required: ['text', 'translatedText'],
             },
+            ...quickThinking(transcription.model),
             maxOutputTokens: 8192,
           },
         }),

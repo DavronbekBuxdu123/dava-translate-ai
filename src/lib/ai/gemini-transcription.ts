@@ -2,6 +2,7 @@ import 'server-only';
 import { z } from 'zod';
 import { AppError } from '@/lib/server';
 import type { Language } from '@/types';
+import { quickThinking } from './gemini-generation';
 const outputSchema = z.object({ text: z.string().trim().min(1).max(5000) });
 export async function geminiTranscribe(file: File, language: Language, model: string) {
   const key = process.env.GEMINI_API_KEY?.trim();
@@ -56,6 +57,7 @@ export async function geminiTranscribe(file: File, language: Language, model: st
               properties: { text: { type: 'STRING' } },
               required: ['text'],
             },
+            ...quickThinking(model),
             maxOutputTokens: 4096,
           },
         }),

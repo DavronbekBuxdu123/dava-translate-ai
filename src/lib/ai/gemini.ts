@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AppError } from '@/lib/server';
 import { translationOutput } from '@/lib/validation';
 import { translationPrompt, type TranslationInput } from './translation-prompt';
+import { textGeneration } from './gemini-generation';
 
 const responseSchema = z.object({
   candidates: z
@@ -47,7 +48,7 @@ export async function translateGemini(input: TranslationInput, model: string) {
               properties: { translatedText: { type: 'STRING' } },
               required: ['translatedText'],
             },
-            maxOutputTokens: 8192,
+            ...textGeneration(model, input.text.length),
           },
         }),
       },
