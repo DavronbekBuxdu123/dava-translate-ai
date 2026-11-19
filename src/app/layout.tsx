@@ -4,12 +4,12 @@ import { AppShell } from '@/components/layout/app-shell';
 import './globals.css';
 export const metadata: Metadata = {
   title: {
-    default: 'DAVA Translate AI — Til to‘siqsiz muloqot',
-    template: '%s | DAVA Translate AI',
+    default: "So'zla AI — Til to‘siqsiz muloqot",
+    template: "%s | So'zla AI",
   },
   description: 'O‘zbekcha va ruscha tabiiy tarjima, ovozli suhbat va sayohat iboralari.',
   manifest: '/manifest.webmanifest',
-  appleWebApp: { capable: true, title: 'DAVA' },
+  appleWebApp: { capable: true, title: "So'zla AI" },
   icons: { icon: '/icons/icon.svg', apple: '/icons/icon-192.png' },
 };
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#315CF5' };

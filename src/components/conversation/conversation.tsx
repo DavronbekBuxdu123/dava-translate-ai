@@ -175,7 +175,9 @@ export function ConversationView() {
         <div>
           <span className="eyebrow">BIR SUHBAT. IKKI TIL.</span>
           <h1>Jonli suhbat</h1>
-          <p>Navbatma-navbat gapiring. DAVA eshitadi, tarjima qiladi va talaffuz etadi.</p>
+          <p>
+            Navbatma-navbat gapiring. So&apos;zla AI eshitadi, tarjima qiladi va talaffuz etadi.
+          </p>
         </div>
         <div className="actions">
           <Button variant="secondary" onClick={() => setShowHistory(!showHistory)}>
@@ -474,8 +476,8 @@ export function ConversationView() {
       </section>
       <p className="privacy-note">
         Bu navbatli push-to-talk suhbat: yozuv tugagach tarjima qilinadi. Audio tanlangan Gemini
-        yoki OpenAI xizmatiga yuboriladi, DAVA uni doimiy saqlamaydi. Talaffuz sintezlangan ovoz.
-        Avtomatik tarjima va ijroni sozlamalardan boshqaring.
+        yoki OpenAI xizmatiga yuboriladi, So&apos;zla AI uni doimiy saqlamaydi. Talaffuz
+        sintezlangan ovoz. Avtomatik tarjima va ijroni sozlamalardan boshqaring.
       </p>
     </>
   );

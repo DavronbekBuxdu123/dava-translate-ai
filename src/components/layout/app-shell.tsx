@@ -107,7 +107,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Languages size={25} />
           </span>
           <span className="brand-name">
-            DAVA<span>TRANSLATE AI</span>
+            So&apos;zla AI<span>TRANSLATE AI</span>
           </span>
         </Link>
         <div className="sidebar-caption">ISH MAYDONI</div>
@@ -179,7 +179,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Button>
             <span className="breadcrumb">
               Ish maydoni <span>/</span>{' '}
-              <strong>{navigation.find((n) => n.href === pathname)?.label || 'DAVA'}</strong>
+              <strong>{navigation.find((n) => n.href === pathname)?.label || "So'zla AI"}</strong>
             </span>
           </div>
           <div className="topbar-right">
@@ -224,7 +224,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
         <footer className="footer">
-          <span>© {new Date().getFullYear()} DAVA Translate AI</span>
+          <span>© {new Date().getFullYear()} So&apos;zla AI</span>
           <span>Ikki til. Cheksiz imkoniyatlar.</span>
           <Link href="/settings#privacy">Maxfiylik</Link>
         </footer>

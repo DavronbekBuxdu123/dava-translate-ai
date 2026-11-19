@@ -20,7 +20,7 @@ export function SettingsView() {
     <>
       <div className="page-intro">
         <div>
-          <span className="eyebrow">SIZGA MOS DAVA</span>
+          <span className="eyebrow">SIZGA MOS So&apos;zla AI</span>
           <h1>Sozlamalar</h1>
           <p>Muloqot tajribangizni o‘zingizga moslang.</p>
         </div>
@@ -121,8 +121,8 @@ export function SettingsView() {
           <p>
             Tarjima matni tanlangan Gemini yoki OpenAI xizmatiga yuboriladi. Audio transkripsiyasi
             tanlangan Gemini yoki OpenAI orqali bajariladi. AI talaffuzi uchun matn tanlangan Gemini
-            yoki OpenAI ovoz xizmatiga yuboriladi. DAVA audio yozuvlarni doimiy saqlamaydi.
-            Provayder ma’lumotlarni o‘z siyosatiga binoan qayta ishlaydi.
+            yoki OpenAI ovoz xizmatiga yuboriladi. So&apos;zla AI audio yozuvlarni doimiy
+            saqlamaydi. Provayder ma’lumotlarni o‘z siyosatiga binoan qayta ishlaydi.
           </p>
           <p>
             Oflayn keshda faqat ommaviy iboralar va ilova qobig‘i saqlanadi; shaxsiy API javoblari

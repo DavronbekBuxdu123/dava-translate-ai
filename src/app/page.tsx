@@ -48,7 +48,7 @@ export default function Home() {
     <>
       <div className="page-intro">
         <div>
-          <span className="eyebrow">DAVA BILAN YANGI IMKONIYATLAR</span>
+          <span className="eyebrow">So&apos;zla AI BILAN YANGI IMKONIYATLAR</span>
           <h1>
             Salom! Bugun qayerga yo‘l olamiz? <span className="wave">✦</span>
           </h1>
@@ -111,7 +111,7 @@ export default function Home() {
                 <h2>Gapiring. Tushuning. Muloqot qiling.</h2>
                 <span className="pill purple-pill">Ovozli suhbat</span>
               </div>
-              <p>Navbat bilan gapiring — DAVA ikkala tomonni ham tarjima qiladi.</p>
+              <p>Navbat bilan gapiring — So&apos;zla AI ikkala tomonni ham tarjima qiladi.</p>
               <div className="mini-features">
                 <span>
                   <Mic size={13} /> Ovozdan matnga

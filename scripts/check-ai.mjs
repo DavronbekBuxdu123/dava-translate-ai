@@ -30,7 +30,7 @@ try {
       `Diagnostika: ${status.code}. npm run dev serveri va yangi kod ishlayotganini tekshiring.`,
     );
   const { data } = await status.response.json();
-  console.log('DAVA server versiyasi:', data.revision);
+  console.log("So'zla AI server versiyasi:", data.revision);
   console.table(
     ['translation', 'transcription', 'speech'].map((name) => ({
       funksiya: name,

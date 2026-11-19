@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "DAVA Translate AI",
-  "short_name": "DAVA",
+  "name": "So'zla AI",
+  "short_name": "So'zla AI",
   "description": "O‘zbekcha ↔ ruscha tarjimon va offline sayohat iboralari",
   "lang": "uz",
   "start_url": "/",

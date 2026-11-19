@@ -1,4 +1,4 @@
-# DAVA Translate AI — bajarish rejasi
+# So'zla AI — bajarish rejasi
 
 1. Next.js + TypeScript + dizayn tizimi, Prisma schema va xavfsiz API poydevori.
 2. Haqiqiy OpenAI tarjima/STT/TTS, guest ownership va persistent tarix/suhbat.

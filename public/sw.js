@@ -1,5 +1,5 @@
 /* Public resources only. Never cache /api, RSC payloads, private history or audio. */
-const CACHE = 'dava-public-v2';
+const CACHE = 'dava-public-v3';
 const PUBLIC = [
   '/offline/index.html',
   '/offline/offline.js',

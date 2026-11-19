@@ -7,14 +7,17 @@ export default function Page() {
         <div>
           <span className="eyebrow">O‘ZBEKCHA ↔ РУССКИЙ</span>
           <h1>So‘zlaringizga yangi imkoniyat</h1>
-          <p>Matn yozing yoki mikrofon orqali gapiring. DAVA ma’nosini saqlab tarjima qiladi.</p>
+          <p>
+            Matn yozing yoki mikrofon orqali gapiring. So&apos;zla AI ma’nosini saqlab tarjima
+            qiladi.
+          </p>
         </div>
       </div>
       <Translator />
       <p className="privacy-note">
         Mikrofon faqat siz bosganingizda ishga tushadi. Audio transkripsiya uchun tanlangan Gemini
-        yoki OpenAI xizmatiga yuboriladi va DAVA serverida saqlanmaydi. Talaffuz sun’iy ovoz
-        yordamida yaratiladi.
+        yoki OpenAI xizmatiga yuboriladi va So&apos;zla AI serverida saqlanmaydi. Talaffuz sun’iy
+        ovoz yordamida yaratiladi.
       </p>
     </div>
   );

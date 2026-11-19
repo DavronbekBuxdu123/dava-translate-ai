@@ -1,4 +1,4 @@
-# DAVA Translate AI
+# So'zla AI
 
 O‘zbekcha ↔ ruscha AI tarjimon, navbatli ovozli suhbat va 100 ta offline sayohat iborasi. Next.js App Router frontend va backendni bitta loyihada birlashtiradi. Target hosting: **Vercel + Neon PostgreSQL**.
 
@@ -105,7 +105,7 @@ Mos standart sozlama: `TRANSLATION_PROVIDER=gemini`, `TRANSCRIPTION_PROVIDER=gem
 ## Tayyor funksiyalar
 
 - Kontekstni saqlovchi server AI tarjimasi: UZ/RU, kundalik/rasmiy uslub, Zod structured output, Ctrl+Enter, ikki taraflama swap, copy/paste, 5000 belgi limiti, 5 daqiqalik aynan bir xil so‘rov keshi.
-- Haqiqiy mikrofon: MediaRecorder, ruxsat xatolari, audio darajasi, 60 soniya va 4 MB limit, tahrirlanadigan transkript. Audio DAVA serverida doimiy saqlanmaydi.
+- Haqiqiy mikrofon: MediaRecorder, ruxsat xatolari, audio darajasi, 60 soniya va 4 MB limit, tahrirlanadigan transkript. Audio So'zla AI serverida doimiy saqlanmaydi.
 - Gemini bilan ruscha/o‘zbekcha server AI TTS. Qurilma ovozi alohida fallback; yashirin ruscha/inglizcha almashtirish yo‘q. Play/pause/replay, tezlik va xato holatlari.
 - Navbatli push-to-talk suhbat: ikkita til mikrofoni, matn yuborish, sessiyalar, tugatish, replay/copy, xabarlarni tasdiq bilan tozalash. Bu simultaneous streaming emas.
 - PostgreSQL tarix va tarjima sevimlilari: qidirish, til/sana filtri (UTC kuni), sahifalash, qayta ishlatish, o‘chirish. Suhbatlar alohida o‘chiriladi.
@@ -174,7 +174,7 @@ Server AI route’lar `maxDuration = 60`; OpenAI chaqiriqlari 25 soniya timeout 
 - Barcha tarix/sevimli/suhbat amallari guest ownership bilan cheklangan. Begona ID uchun 404.
 - Mutating API same-origin tekshiruvi; JSON va audio hajm/type validatsiyasi. Xatolarda credential yoki provayder ichki exception’i chiqmaydi. AI matni HTML sifatida render qilinmaydi.
 - Cookie o‘chirilsa eski tarixga qayta bog‘lanib bo‘lmaydi. Bu authsiz MVP; keyingi akkaunt migratsiyasi uchun `GuestSession` alohida model sifatida ajratilgan.
-- Tarjima matni tanlangan Gemini yoki OpenAI provayderiga yuboriladi; audio transkripsiya va server TTS ham alohida tanlangan Gemini yoki OpenAI orqali bajariladi. Gemini uchun [Google API terms](https://ai.google.dev/gemini-api/terms) amal qiladi, bepul va pullik xizmatdagi ma’lumotlardan foydalanish shartlari farq qiladi. DAVA raw audio’ni doimiy saqlamaydi; provayderning [data controls](https://platform.openai.com/docs/guides/your-data) va [privacy](https://openai.com/policies/privacy-policy/) siyosati amal qiladi.
+- Tarjima matni tanlangan Gemini yoki OpenAI provayderiga yuboriladi; audio transkripsiya va server TTS ham alohida tanlangan Gemini yoki OpenAI orqali bajariladi. Gemini uchun [Google API terms](https://ai.google.dev/gemini-api/terms) amal qiladi, bepul va pullik xizmatdagi ma’lumotlardan foydalanish shartlari farq qiladi. So'zla AI raw audio’ni doimiy saqlamaydi; provayderning [data controls](https://platform.openai.com/docs/guides/your-data) va [privacy](https://openai.com/policies/privacy-policy/) siyosati amal qiladi.
 - OpenAI va Upstash billing limitlarini servislarning o‘zida ham o‘rnating. Loglarga matn, audio, connection string yoki API kalit yozmang.
 
 ## Testlar
