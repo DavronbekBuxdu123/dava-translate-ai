@@ -55,3 +55,40 @@ it('records a real Blob through processing and transcribed states and releases t
   unmount();
   vi.unstubAllGlobals();
 });
+
+it('sends recorded audio to one combined handler without a separate transcription request', async () => {
+  class Recorder {
+    static isTypeSupported() {
+      return true;
+    }
+    state = 'inactive';
+    mimeType = 'audio/webm';
+    ondataavailable: ((event: { data: Blob }) => void) | null = null;
+    onstop: (() => void) | null = null;
+    start() {
+      this.state = 'recording';
+    }
+    stop() {
+      this.state = 'inactive';
+      this.ondataavailable?.({ data: new Blob(['recording'], { type: 'audio/webm' }) });
+      this.onstop?.();
+    }
+  }
+  vi.stubGlobal('MediaRecorder', Recorder);
+  Object.defineProperty(navigator, 'mediaDevices', {
+    configurable: true,
+    value: { getUserMedia: vi.fn(async () => ({ getTracks: () => [{ stop: vi.fn() }] })) },
+  });
+  const transcript = vi.fn(),
+    onAudio = vi.fn(async () => {});
+  const { result, unmount } = renderHook(() => useRecorder(transcript, { onAudio }));
+  await act(async () => {
+    await result.current.start('uz');
+  });
+  act(() => result.current.stop());
+  await waitFor(() => expect(result.current.state).toBe('translated'));
+  expect(onAudio).toHaveBeenCalledWith(expect.any(Blob), 'uz');
+  expect(transcript).not.toHaveBeenCalled();
+  unmount();
+  vi.unstubAllGlobals();
+});

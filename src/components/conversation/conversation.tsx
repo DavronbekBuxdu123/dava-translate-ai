@@ -34,6 +34,7 @@ export function ConversationView() {
   const [draft, setDraft] = useState('');
   const [sourceLang, setSourceLang] = useState<Language>('uz');
   const [busy, setBusy] = useState(false);
+  const [operation, setOperation] = useState<'translation' | 'voice' | 'session'>('translation');
   const [error, setError] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [page, setPage] = useState(1);
@@ -63,15 +64,28 @@ export function ConversationView() {
   async function send(text: string, language: Language) {
     if (!text.trim() || pending.current) return;
     pending.current = true;
+    setOperation('translation');
     setBusy(true);
     setError('');
     speech.stop();
     try {
-      const current = session || (await createSession());
-      const result = await api<Message>(`/api/conversations/${current.id}/messages`, {
+      const request = {
         method: 'POST',
         body: JSON.stringify({ text, sourceLang: language, tone: 'casual' }),
-      });
+      };
+      let result: Message;
+      if (session) {
+        result = await api<Message>(`/api/conversations/${session.id}/messages`, request);
+      } else {
+        // One request handles the first translation and creates its session only on success.
+        const first = await api<{ conversation: Conversation; message: Message }>(
+          '/api/conversations/messages',
+          request,
+        );
+        setSession(first.conversation);
+        result = first.message;
+        void queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      }
       setMessages((prev) => [...prev, result]);
       setDraft('');
       if (preferences.autoplay) void speech.play(result.translatedText, result.targetLang);
@@ -82,14 +96,52 @@ export function ConversationView() {
       setBusy(false);
     }
   }
-  const recorder = useRecorder(async (text, language) => {
-    setDraft(text);
-    setSourceLang(language);
-    if (preferences.autoTranslate) await send(text, language);
-  });
+  async function sendAudio(audio: Blob, language: Language) {
+    if (pending.current) return;
+    pending.current = true;
+    setOperation('voice');
+    setBusy(true);
+    setError('');
+    speech.stop();
+    try {
+      const form = new FormData();
+      const extension = audio.type.includes('mp4')
+        ? 'm4a'
+        : audio.type.includes('ogg')
+          ? 'ogg'
+          : 'webm';
+      form.append('audio', audio, `speech.${extension}`);
+      form.append('language', language);
+      form.append('tone', 'casual');
+      if (session) form.append('conversationId', session.id);
+      const result = await api<{ conversation: Conversation; message: Message }>(
+        '/api/conversations/voice',
+        { method: 'POST', body: form },
+      );
+      setSession(result.conversation);
+      setMessages((prev) => [...prev, result.message]);
+      setDraft('');
+      setSourceLang(language);
+      void queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      if (preferences.autoplay)
+        void speech.play(result.message.translatedText, result.message.targetLang);
+    } finally {
+      pending.current = false;
+      setBusy(false);
+    }
+  }
+  const recorder = useRecorder(
+    async (text, language) => {
+      setDraft(text);
+      setSourceLang(language);
+      if (preferences.autoTranslate) await send(text, language);
+    },
+    preferences.autoTranslate ? { onAudio: sendAudio } : undefined,
+  );
   async function action(work: () => Promise<void>) {
     if (pending.current) return;
     pending.current = true;
+    setOperation('session');
     setBusy(true);
     setError('');
     speech.stop();
@@ -299,9 +351,18 @@ export function ConversationView() {
               </article>
             ))
           )}
-          {busy && (
-            <div className="processing-message">
-              <LoaderCircle className="spin" size={18} /> Suhbat qayta ishlanmoqda...
+          {(busy || recorder.state === 'processing' || speech.state === 'loading') && (
+            <div className="processing-message" role="status">
+              <LoaderCircle className="spin" size={18} />
+              {busy
+                ? operation === 'voice'
+                  ? 'Ovoz tarjima qilinmoqda...'
+                  : operation === 'translation'
+                    ? 'Tarjima tayyorlanmoqda...'
+                    : 'Suhbat yuklanmoqda...'
+                : recorder.state === 'processing'
+                  ? 'Ovoz matnga aylantirilmoqda...'
+                  : 'AI ovozi tayyorlanmoqda. Matnni hozir o‘qishingiz mumkin.'}
             </div>
           )}
           <div ref={bottom} />

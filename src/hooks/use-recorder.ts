@@ -2,9 +2,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { api } from '@/lib/client';
 import type { Language } from '@/types';
-export type RecordingState = 'idle' | 'recording' | 'processing' | 'transcribed' | 'error';
+export type RecordingState =
+  'idle' | 'recording' | 'processing' | 'transcribed' | 'translated' | 'error';
 export function useRecorder(
   onTranscript: (text: string, language: Language) => void | Promise<void>,
+  options: { onAudio?: (audio: Blob, language: Language) => Promise<void> } = {},
 ) {
   const [state, setState] = useState<RecordingState>('idle');
   const [seconds, setSeconds] = useState(0);
@@ -19,6 +21,10 @@ export function useRecorder(
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const frame = useRef<number>(0);
   const callback = useRef(onTranscript);
+  const audioCallback = useRef(options.onAudio);
+  useEffect(() => {
+    audioCallback.current = options.onAudio;
+  }, [options.onAudio]);
   useEffect(() => {
     callback.current = onTranscript;
   }, [onTranscript]);
@@ -108,6 +114,11 @@ export function useRecorder(
         setState('processing');
         try {
           const blob = new Blob(chunks, { type: recording.mimeType || 'audio/webm' });
+          if (audioCallback.current) {
+            await audioCallback.current(blob, lang);
+            if (mounted.current) setState('translated');
+            return;
+          }
           const form = new FormData();
           const ext = blob.type.includes('mp4')
             ? 'm4a'
