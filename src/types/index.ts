@@ -1,6 +1,7 @@
 export type Language = 'uz' | 'ru';
 export type Tone = 'casual' | 'formal';
 export type Translation = {
+  source?: 'ai' | 'phrasebook';
   id: string;
   sourceText: string;
   translatedText: string;

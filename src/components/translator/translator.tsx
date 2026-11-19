@@ -26,6 +26,7 @@ import { languages, opposite, swapTranslation, type Language, type Translation }
 import { useRecorder } from '@/hooks/use-recorder';
 import { usePreferences } from '@/hooks/use-preferences';
 import { useSpeech } from '@/hooks/use-speech';
+import { phraseTranslation } from '@/lib/phrase-translation';
 const formSchema = z.object({
   text: z
     .string()
@@ -40,6 +41,7 @@ export function Translator() {
   const [tone, setTone] = useState<'casual' | 'formal'>('casual');
   const [translation, setTranslation] = useState<Translation | null>(null);
   const [displayResult, setDisplayResult] = useState('');
+  const [resultSource, setResultSource] = useState<'ai' | 'phrasebook'>('ai');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [favoriteBusy, setFavoriteBusy] = useState(false);
@@ -75,10 +77,23 @@ export function Translator() {
   }, [form]);
   async function submit(values: { text: string }) {
     if (busy) return;
-    if (!navigator.onLine) {
+    const prepared = phraseTranslation(values.text, lang, tone);
+    if (!navigator.onLine && !prepared) {
       setError(
         'AI tarjima uchun internetga ulaning. Offline iboralar kutubxonasidan foydalanishingiz mumkin.',
       );
+      return;
+    }
+    if (prepared) {
+      setDisplayResult(prepared);
+      setTranslation(null);
+      setResultSource('phrasebook');
+    } else {
+      setDisplayResult('');
+      setResultSource('ai');
+    }
+    if (!navigator.onLine && prepared) {
+      setError('');
       return;
     }
     const current = ++requestId.current.value;
@@ -92,6 +107,7 @@ export function Translator() {
       });
       if (!mounted.current || current !== requestId.current.value) return;
       setTranslation(result);
+      setResultSource(result.source || 'ai');
       setDisplayResult(result.translatedText);
       void queryClient.invalidateQueries({ queryKey: ['history'] });
       if (preferences.autoplay) void speech.play(result.translatedText, result.targetLang);
@@ -139,7 +155,9 @@ export function Translator() {
             <Languages size={19} />
           </span>
           <h2 id="translator-title">Tezkor tarjima</h2>
-          <span className="pill">AI yordamida</span>
+          <span className="pill">
+            {displayResult && resultSource === 'phrasebook' ? 'Tayyor ibora' : 'AI yordamida'}
+          </span>
         </div>
         <label className="tone-select">
           <span>Uslub:</span>
@@ -286,7 +304,7 @@ export function Translator() {
             </div>
           </div>
           <div className="target-box" aria-live="polite" aria-busy={busy}>
-            {busy ? (
+            {busy && !displayResult ? (
               <div className="translation-loading">
                 <div className="skeleton" />
                 <div className="skeleton" />

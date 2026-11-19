@@ -33,19 +33,21 @@ it('returns a recent identical translation without invoking the provider', async
   const cached = { id: 'cached', translatedText: 'Привет' };
   findFirst.mockResolvedValue(cached);
   const res = await POST(request({ text: 'Salom', sourceLang: 'uz' }));
-  expect((await res.json()).data).toEqual(cached);
+  expect((await res.json()).data).toEqual({ ...cached, source: 'ai' });
   expect(provider).not.toHaveBeenCalled();
   expect(findFirst).toHaveBeenCalledWith(
     expect.objectContaining({ where: expect.objectContaining({ guestId: 'guest-a' }) }),
   );
 });
 it('saves new AI translation under the resolved guest with the correct direction', async () => {
-  const res = await POST(request({ text: 'Assalomu alaykum!', sourceLang: 'uz' }));
+  const res = await POST(
+    request({ text: 'Bugun yangi ko‘rgazmani qayerdan topsam bo‘ladi?', sourceLang: 'uz' }),
+  );
   expect(res.status).toBe(200);
   expect(res.headers.get('server-timing')).toContain('provider;dur=');
   expect(res.headers.get('x-dava-ai-provider')).toBeTruthy();
   expect(provider).toHaveBeenCalledWith({
-    text: 'Assalomu alaykum!',
+    text: 'Bugun yangi ko‘rgazmani qayerdan topsam bo‘ladi?',
     sourceLang: 'uz',
     tone: 'casual',
   });
@@ -74,4 +76,11 @@ it('separates cached translations by provider and model', async () => {
   await POST(request(input));
   const otherModelKey = findFirst.mock.calls.at(-1)![0].where.requestKey;
   expect(new Set([openaiKey, geminiKey, otherModelKey]).size).toBe(3);
+});
+
+it('uses a disclosed curated phrase without invoking AI or consuming the paid daily budget', async () => {
+  const response = await POST(request({ text: 'Assalomu alaykum!', sourceLang: 'uz' }));
+  expect((await response.json()).data.source).toBe('phrasebook');
+  expect(provider).not.toHaveBeenCalled();
+  expect(contextMock).toHaveBeenCalledWith(expect.anything(), false);
 });
